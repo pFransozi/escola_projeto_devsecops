@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - db_net
+      - backend_net
+
+  frontend:
+    build: ./frontend
+    container_name: escola_front
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - backend_net
+      - frontend_net
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  db:
+    container_name: escola_db
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: escola_db
+    ports:
+      - "3306:3306"
+    networks:
+      - db_net
+
+networks:
+  db_net:
+  backend_net:
+  frontend_net:
