@@ -1,52 +1,61 @@
-# Python
-__pycache__/
+# ===============================
+# PYTHON
+# ===============================
 *.py[cod]
 *.pyo
 *.pyd
 *.pyc
 *.egg-info/
-*.sqlite3
 *.log
-.env
+*.sqlite3
+*.db
+__pycache__/
 venv/
 .venv/
+.env
 
-# Flask & Alembic
+# ===============================
+# FLASK / ALEMBIC
+# ===============================
 instance/
-*.db
-migrations/__pycache__/
-backend/app/**/__pycache__/
-backend/app/**/**/*.pyc
+sistema/backend/migrations/__pycache__/
+sistema/backend/app/**/__pycache__/
+sistema/backend/app/**/**/*.pyc
 
-# MySQL dumps
-*.sql
+# Ignora versões do Alembic (mas mantém arquivos de config)
+sistema/backend/migrations/versions/
 
-# VSCode/PyCharm settings
+# ===============================
+# FRONTEND (React / Node)
+# ===============================
+sistema/frontend/node_modules/
+sistema/frontend/build/
+sistema/frontend/.env
+sistema/frontend/.env.local
+sistema/frontend/.env.development.local
+sistema/frontend/.env.test.local
+sistema/frontend/.env.production.local
+
+# ===============================
+# DOCKER
+# ===============================
+**/.dockerignore
+
+# ===============================
+# IDEs / SISTEMA
+# ===============================
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 
-# Node.js
-frontend/node_modules/
-frontend/build/
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
-
-# npm logs
+# ===============================
+# LOGS / COVERAGE
+# ===============================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Coverage & testing
 coverage/
 *.cover
 *.lcov
 *.lcov.info
-
-# Docker
-**/.dockerignore
-
-# Sistema
-.DS_Store
-Thumbs.db
