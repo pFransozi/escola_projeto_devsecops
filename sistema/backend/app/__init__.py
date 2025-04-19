@@ -18,19 +18,16 @@ def create_app():
     migrate.init_app(app, db)
 
     from app.middleware.auth import autenticacao
-
     app.before_request(autenticacao)
 
-    from app.routes.user_routes import user_db
-
+    
+    from app.routes.usuario_routes import user_db
     app.register_blueprint(user_db, url_prefix="/api")
 
     from app.routes.auth_routes import auth_bp
-
     app.register_blueprint(auth_bp, url_prefix="/api")
 
     from app.routes.dashboard_routes import dashboard_bp
-
     app.register_blueprint(dashboard_bp, url_prefix="/api")
 
     from app.routes.teste_db_routes import teste_db_bp
