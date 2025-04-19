@@ -49,17 +49,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const menuAberto = ref(false)
-const user = ref(JSON.parse(localStorage.getItem('user')))
-const initials = user.value.nome[0] + user.value.ultimo_nome[0]
-
-function logout() {
-  localStorage.clear()
-  menuAberto.value = false
-  router.push('/login')
-}
+import { useHomeLogic } from '../composables/useHomeLogic.js'
+const { user, initials, menuAberto, logout } = useHomeLogic()
 </script>
