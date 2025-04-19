@@ -18,7 +18,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 
-ENV FLASK_APP=app/app.py
+ENV FLASK_APP=app/main.py
 EXPOSE 5000
 
 ENTRYPOINT ["/entrypoint.sh"]

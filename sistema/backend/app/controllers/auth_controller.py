@@ -5,8 +5,7 @@ from app.models.user import User
 
 def login():
     data = request.get_json()
-    print("JSON recebido no backend:", data)
-
+    
     login = data.get("usuario")
     senha = data.get("senha")
 
@@ -17,6 +16,7 @@ def login():
         )
 
     user = User.query.filter_by(usuario=login).first()
+    print(user)
     if user and user.check_password(senha):
         return (jsonify({"success": True, "user": user.to_dict()}), 200)
 

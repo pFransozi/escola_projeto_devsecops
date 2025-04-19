@@ -10,6 +10,8 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
       MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -21,7 +23,7 @@ services:
     environment:
       - FLASK_ENV= development
       # - FLASK_APP=app/app.py
-      - FLASK_APP=app.app:create_app
+      - FLASK_APP=app.main:create_app
       - FLASK_DEBUG=1
       - DB_HOST= mysql_db
       - DB_USER= myuser
@@ -40,22 +42,14 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: react_frontend
+    container_name: vue_frontend
     depends_on:
       - backend
     ports:
       - "3000:80"
-    # volumes:
-    #   - ./frontend/src:/app/src
-    #   - ./frontend/public:/app/public
-    #   - ./frontend/.env:/app/.env
-    #   - /app/node_modules       # Garante que o node_modules usado seja o do container
     networks:
       - backend_net
       - frontend_net
-    environment:
-      - REACT_APP_API_URL=http://flask_backend:5000/api
-
 volumes:
   mysql_data:
 

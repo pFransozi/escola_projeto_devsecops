@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash
-from app import create_app, db
-from app.models.user import User, UserTipoEnum
+from app import create_app
+from app.extensions import db
 
 app = create_app()
 
@@ -15,11 +15,13 @@ usuarios_iniciais = [
         "sexo": "M",
         "cpf": "00000000032",
         "endereco": "Escola I",
-        "tipo": UserTipoEnum.Admin,
+        "tipo": "Admin",  # ← temporário, ajustaremos abaixo
     }
 ]
 
 with app.app_context():
+    from app.models.user import User, UserTipoEnum
+
     for user in usuarios_iniciais:
         if User.query.filter_by(usuario=user["usuario"]).first():
             print("Admin já existe. Nenhuma ação necessária")
@@ -35,9 +37,7 @@ with app.app_context():
             sexo=user["sexo"],
             cpf=user["cpf"],
             endereco=user["endereco"],
-            tipo=user["tipo"],
-            # id_user_insert=0,  # se necessário, atualize depois
-            # id_user_update=0,
+            tipo=UserTipoEnum[user["tipo"]],  # ← agora converte a string para Enum
         )
 
         db.session.add(novo_user)

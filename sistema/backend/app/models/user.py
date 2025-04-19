@@ -1,5 +1,5 @@
 from datetime import datetime, timezone, date
-from app import db
+from app.extensions import db
 from werkzeug.security import check_password_hash
 from enum import Enum
 from sqlalchemy import Enum as SAEnum
@@ -65,11 +65,11 @@ class User(db.Model):
             "id": self.id,
             "nome": self.nome,
             "ultimo_nome": self.ultimo_nome,
-            "usuario": self.usuario,
+            # "usuario": self.usuario,
             "email": self.email,
-            "data_nascimento": self.data_nascimento,
-            "sexo": self.sexo,
-            "cpf": self.cpf,
-            "endereco": self.endereco,
+            # "data_nascimento": self.data_nascimento,
+            # "sexo": self.sexo,
+            # "cpf": self.cpf,
+            # "endereco": self.endereco,
             "tipo": self.tipo,
         }

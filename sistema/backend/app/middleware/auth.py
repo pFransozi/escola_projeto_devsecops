@@ -2,8 +2,11 @@ from flask import request, g, jsonify
 from app.models.user import User
 
 def autenticacao():
+
+    if request.method == "OPTIONS":
+        return
     
-    if request.path in ["/api/login", "/api/usuario"]:
+    if request.path in ["/api/login", "/api/usuario", "/ping-db"]:
         return
     
     user_id = request.headers.get("X-User-Id")
