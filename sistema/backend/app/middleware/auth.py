@@ -3,8 +3,9 @@ from app.models.user import User
 
 def autenticacao():
 
+    #preflight request 
     if request.method == "OPTIONS":
-        return
+        return '', 200
     
     if request.path in ["/api/login", "/api/usuario", "/ping-db"]:
         return
