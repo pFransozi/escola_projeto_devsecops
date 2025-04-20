@@ -33,7 +33,7 @@
         <v-list-item to="/home/dashboard" link>
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/home/cadastro" link>
+        <v-list-item to="/home/usuario" link>
           <v-list-item-title>Cadastro de Usuário</v-list-item-title>
         </v-list-item>
       </v-list>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Dashboard from '../views/Dashboard.vue'
-import CadastroUsuario from '../views/Usuario.vue'
+import CadastroUsuario from '../views/CadastroUsuario.vue'
 import Login from '../views/Login.vue'
 
 const routes = [
@@ -14,7 +14,7 @@ const routes = [
         children: [
             { path: '', redirect: '/home/dashboard' },
             { path: 'dashboard', component: Dashboard },
-            { path: 'cadastro', component: CadastroUsuario },
+            { path: 'usuario', component: CadastroUsuario },
         ]
     }
 ]
