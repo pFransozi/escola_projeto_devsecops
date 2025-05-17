@@ -1,61 +1,98 @@
 <template>
-    <v-container class="mt-8" max-width="600px">
-        <v-card>
-            <v-card-title class="text-h5">Cadastro de Usuário</v-card-title>
-            <v-card-text>
-                <v-form @submit.prevent="cadastrarUsuario" ref="formRef">
-                    <v-row dense>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.nome" label="Nome" required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.ultimo_nome" label="Último Nome" required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.usuario" label="Usuário" required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.senha" label="Senha" type="password" required />
-                        </v-col>
-                        <v-col cols="12">
-                            <v-text-field v-model="form.email" label="Email" />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.data_nascimento" label="Data de Nascimento" type="date"
-                                required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-select v-model="form.sexo" label="Sexo" :items="['M', 'F']" required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.cpf" label="CPF" required />
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field v-model="form.endereco" label="Endereço" required />
-                        </v-col>
-                        <v-col cols="12">
-                            <v-select v-model="form.tipo" label="Tipo de Usuário" :items="tipos" required />
-                        </v-col>
-                    </v-row>
+  <v-container fluid>
+    <v-toolbar flat>
+      <v-toolbar-title>Cadastro de Usuários</v-toolbar-title>
+      <v-spacer />
+      <v-btn color="primary" @click="openDialog()">Novo Usuário</v-btn>
+    </v-toolbar>
 
-                    <v-btn color="primary" type="submit" class="mt-4" :loading="loading" block>
-                        Cadastrar
-                    </v-btn>
+    <v-data-table :headers="headers" :items="usuarios" :items-per-page="10" class="elevation-1" :loading="loading"
+      loading-text="Carregando usuários...">
+      <template #item.actions="{ item }">
+        <v-icon small class="mr-2" @click="openDialog(item)">mdi-pencil</v-icon>
+        <v-icon small @click="confirmDelete(item)">mdi-delete</v-icon>
+      </template>
+    </v-data-table>
 
-                    <v-alert v-if="erro" type="error" class="mt-4">{{ erro }}</v-alert>
-                    <v-alert v-if="sucesso" type="success" class="mt-4">Usuário cadastrado com sucesso!</v-alert>
-                </v-form>
-            </v-card-text>
-        </v-card>
-    </v-container>
+    <!-- Dialog de criação/edição -->
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h6">{{ editedIndex === -1 ? 'Novo Usuário' : 'Editar Usuário' }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form">
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="editedItem.nome" label="Nome" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="editedItem.ultimo_nome" label="Último Nome" required />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="editedItem.usuario" label="Login" required />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="editedItem.senha" label="Senha" type="password"
+                  :rules="editedIndex === -1 ? [v => !!v || 'Senha é obrigatória'] : []" />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="editedItem.email" label="E-mail" />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+      v-model="editedItem.data_nascimento"
+      label="Data de Nascimento"
+      placeholder="dd/mm/aaaa"
+/>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-select v-model="editedItem.sexo"
+                  :items="[{ text: 'Masculino', value: 'M' }, { text: 'Feminino', value: 'F' }]" label="Sexo"
+                  required />
+              </v-col>
+              <v-col cols="4">
+                <v-text-field v-model="editedItem.cpf" label="CPF" />
+              </v-col>
+              <v-col cols="4">
+                <v-text-field v-model="editedItem.endereco" label="Endereço" />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-select v-model="editedItem.tipo" :items="tipos" label="Tipo" required />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="closeDialog()">Cancelar</v-btn>
+          <v-btn color="primary" @click="save()">Salvar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script setup>
-
-import {ref} from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const form = ref({
+const dialog = ref(false)
+const loading = ref(false)
+const dateMenu = ref(false)
+const tipos = ['admin', 'secretario', 'professor']
+const usuarios = ref([])
+const editedIndex = ref(-1)
+const editedItem = ref({
+  id: null,
   nome: '',
   ultimo_nome: '',
   usuario: '',
@@ -68,36 +105,85 @@ const form = ref({
   tipo: ''
 })
 
-const tipos = ['admin', 'secretario', 'professor']
+const headers = [
+  { text: 'ID', value: 'id' },
+  { text: 'Nome', value: 'nome' },
+  { text: 'Usuário', value: 'usuario' },
+  { text: 'E-mail', value: 'email' },
+  { text: 'Tipo', value: 'tipo' },
+  { text: 'Ações', value: 'actions', sortable: false }
+]
 
-const loading = ref(false)
-const sucesso = ref(false)
-const erro = ref(null)
-
-async function cadastrarUsuario() {
-  erro.value = null
-  sucesso.value = false
+function fetchUsers() {
   loading.value = true
+  axios
+    .get(import.meta.env.VITE_API_URL + '/usuario')
+    .then(response => {
+      usuarios.value = response.data.data
+    })
+    .catch(console.error)
+    .finally(() => (loading.value = false))
+}
 
-  try {
-    const res = await axios.post(import.meta.env.VITE_API_URL + '/usuario', form.value)
+function openDialog(item) {
+  
+  dateMenu.value = false
 
-    if (res.data.success) {
-      sucesso.value = true
-      erro.value = null
-      form.value = {
-        nome: '', ultimo_nome: '', usuario: '', senha: '', email: '',
-        data_nascimento: '', sexo: '', cpf: '', endereco: '', tipo: ''
-      }
-    } else {
-      erro.value = res.data.message || 'Erro ao cadastrar usuário.'
-    }
+  
+  if (item) {
+    editedIndex.value = usuarios.value.indexOf(item)
+    editedItem.value = { ...item }
+  } else {
+    editedIndex.value = -1
+    editedItem.value = { id: null, nome: '', ultimo_nome: '', usuario: '', senha: '', email: '', data_nascimento: '', sexo: '', cpf: '', endereco: '', tipo: '' }
+  }
+  dialog.value = true
+}
 
-  } catch (err) {
-    erro.value = err.response?.data?.message || 'Erro ao cadastrar usuário.'
-  } finally {
-    loading.value = false
+function closeDialog() {
+  dialog.value = false
+  dateMenu.value = false
+}
+
+function formatarDataParaEnvio(data) {
+  if (!data) return null;
+  const [dia, mes, ano] = data.split('/');
+  return `${ano}-${mes}-${dia}`;
+}
+
+function save() {
+  const payload = { ...editedItem.value };
+  payload.data_nascimento = formatarDataParaEnvio(payload.data_nascimento)
+  let request
+  if (editedIndex.value > -1) {
+    request = axios.put(
+      import.meta.env.VITE_API_URL + `/usuario/${payload.id}`,
+      payload
+    )
+  } else {
+    request = axios.post(
+      import.meta.env.VITE_API_URL + '/usuario',
+      payload
+    )
+  }
+  request
+    .then(() => {
+      fetchUsers()
+      closeDialog()
+    })
+    .catch(err => {
+      alert(err.response.data.message || 'Erro ao salvar')
+    })
+}
+
+function confirmDelete(item) {
+  if (confirm(`Deseja remover o usuário ${item.nome}?`)) {
+    axios
+      .delete(import.meta.env.VITE_API_URL + `/usuario/${item.id}`)
+      .then(fetchUsers)
+      .catch(err => alert(err.response.data.message || 'Erro ao deletar'))
   }
 }
 
+onMounted(fetchUsers)
 </script>

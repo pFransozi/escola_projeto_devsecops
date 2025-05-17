@@ -7,7 +7,12 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
+import axios from 'axios'
 
+const userId = localStorage.getItem('userId')
+if (userId) {
+  axios.defaults.headers.common['X-User-Id'] = userId
+}
 
 const vuetify = createVuetify({
   components,
