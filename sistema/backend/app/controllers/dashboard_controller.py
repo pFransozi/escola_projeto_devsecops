@@ -1,12 +1,12 @@
 from flask import jsonify
-from app.models.user import User, UserTipoEnum
+from app.models.usuario import Usuario, UsuarioTipoEnum
 
 
 def dashboard_data():
-    total = User.query.count()
-    admins = User.query.filter_by(tipo=UserTipoEnum.Admin).count()
-    secretarios = User.query.filter_by(tipo=UserTipoEnum.Secretario).count()
-    professores = User.query.filter_by(tipo=UserTipoEnum.Professor).count()
+    total = Usuario.query.count()
+    admins = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Admin).count()
+    secretarios = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Secretario).count()
+    professores = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Professor).count()
 
     return jsonify(
         {
