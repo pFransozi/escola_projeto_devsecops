@@ -12,7 +12,7 @@
 __pycache__/
 venv/
 .venv/
-.env
+#.env
 
 # ===============================
 # FLASK / ALEMBIC
@@ -30,7 +30,7 @@ sistema/backend/migrations/versions/
 # ===============================
 sistema/frontend/node_modules/
 sistema/frontend/build/
-sistema/frontend/.env
+# sistema/frontend/.env
 sistema/frontend/.env.local
 sistema/frontend/.env.development.local
 sistema/frontend/.env.test.local
