@@ -44,18 +44,16 @@
                 <v-text-field v-model="editedItem.email" label="E-mail" />
               </v-col>
               <v-col cols="6">
-                <v-text-field
-      v-model="editedItem.data_nascimento"
-      label="Data de Nascimento"
-      placeholder="dd/mm/aaaa"
-/>
+                <v-text-field v-model="editedItem.data_nascimento" label="Data de Nascimento"
+                  placeholder="dd/mm/aaaa" />
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="4">
-                <v-select v-model="editedItem.sexo"
-                  :items="[{ text: 'Masculino', value: 'M' }, { text: 'Feminino', value: 'F' }]" label="Sexo"
-                  required />
+                <v-select v-model="editedItem.sexo" :items="[
+                  { text: 'Masculino', value: 'M' },
+                  { text: 'Feminino', value: 'F' }
+                ]" item-title="text" item-value="value" label="Sexo" required />
               </v-col>
               <v-col cols="4">
                 <v-text-field v-model="editedItem.cpf" label="CPF" />
@@ -88,7 +86,7 @@ import axios from 'axios'
 const dialog = ref(false)
 const loading = ref(false)
 const dateMenu = ref(false)
-const tipos = ['admin', 'secretario', 'professor']
+const tipos = ['admin', 'secretario', 'professor', 'aluno']
 const usuarios = ref([])
 const editedIndex = ref(-1)
 const editedItem = ref({
@@ -126,19 +124,47 @@ function fetchUsers() {
 }
 
 function openDialog(item) {
-  
-  dateMenu.value = false
+  dateMenu.value = false;
 
-  
   if (item) {
-    editedIndex.value = usuarios.value.indexOf(item)
-    editedItem.value = { ...item }
+    editedIndex.value = usuarios.value.indexOf(item);
+
+    // 1) Clona o objeto para não mexer no original
+    const user = { ...item };
+
+    // 2) Se existir campo data_nascimento, formata
+    if (user.data_nascimento) {
+      // cria um Date válido a partir da string
+      const dt = new Date(user.data_nascimento);
+      // extrai dia, mês e ano em UTC
+      const d = String(dt.getUTCDate()).padStart(2, "0");
+      const m = String(dt.getUTCMonth() + 1).padStart(2, "0");
+      const y = dt.getUTCFullYear();
+      user.data_nascimento = `${d}/${m}/${y}`;
+    }
+
+    // 3) Preenche o editedItem com o objeto formatado
+    editedItem.value = user;
   } else {
-    editedIndex.value = -1
-    editedItem.value = { id: null, nome: '', ultimo_nome: '', usuario: '', senha: '', email: '', data_nascimento: '', sexo: '', cpf: '', endereco: '', tipo: '' }
+    editedIndex.value = -1;
+    editedItem.value = {
+      id: null,
+      nome: '',
+      ultimo_nome: '',
+      usuario: '',
+      senha: '',
+      email: '',
+      data_nascimento: '',
+      sexo: '',
+      cpf: '',
+      endereco: '',
+      tipo: ''
+    };
   }
-  dialog.value = true
+
+  dialog.value = true;
 }
+
 
 function closeDialog() {
   dialog.value = false

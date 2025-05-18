@@ -9,6 +9,7 @@ class UsuarioTipoEnum(str, Enum):
     Admin = "admin"
     Secretario = "secretario"
     Professor = "professor"
+    Aluno = "aluno"
 
 
 class Usuario(db.Model):
@@ -49,11 +50,11 @@ class Usuario(db.Model):
             "id": self.id,
             "nome": self.nome,
             "ultimo_nome": self.ultimo_nome,
-            # "usuario": self.usuario,
+            "usuario": self.usuario,
             "email": self.email,
-            # "data_nascimento": self.data_nascimento,
-            # "sexo": self.sexo,
-            # "cpf": self.cpf,
-            # "endereco": self.endereco,
+            "data_nascimento": self.data_nascimento,
+            "sexo": self.sexo,
+            "cpf": self.cpf,
+            "endereco": self.endereco,
             "tipo": self.tipo,
         }
