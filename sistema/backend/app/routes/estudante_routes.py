@@ -4,6 +4,7 @@ from app.controllers.estudante_controller import (
     ,create_estudante
     ,update_estudante
     ,delete_estudante
+    ,lista_estudantes
 )
 
 estudante_bp = Blueprint(
@@ -12,6 +13,7 @@ estudante_bp = Blueprint(
 )
 
 estudante_bp.route("/<int:id>", methods=["GET"])(get_estudante)
+estudante_bp.route("", methods=["GET", "OPTION"])(lista_estudantes)
 estudante_bp.route("",           methods=["POST"])(create_estudante)
 estudante_bp.route("/<int:id>", methods=["PUT"])(update_estudante)
 estudante_bp.route("/<int:id>", methods=["DELETE"])(delete_estudante)
