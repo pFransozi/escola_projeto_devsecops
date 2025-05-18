@@ -36,6 +36,12 @@
         <v-list-item to="/home/usuario" link>
           <v-list-item-title>Cadastro de Usuário</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/home/professor" link>
+          <v-list-item-title>Cadastro de Professor</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/home/estudante" link>
+          <v-list-item-title>Cadastro de Estudante</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
