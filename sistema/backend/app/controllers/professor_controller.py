@@ -111,3 +111,17 @@ def delete_professor(id):
             "Erro interno no banco de dados"
             ,status_code=500
         )
+
+def lista_professores():
+    try:
+        profs = Professor.query.all()
+        data = [
+            {
+                **prof.to_dict()
+                ,"nome_usuario":prof.usuario.nome + " " + prof.usuario.ultimo_nome
+                ,
+            } for prof in profs
+        ]
+        return APIResponse.success(data=data)
+    except SQLAlchemyError:
+        return APIResponse.error("Erro interno no banco de dados", status_code=500)
