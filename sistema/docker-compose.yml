@@ -32,7 +32,7 @@ services:
       - DB_HOST=mysql_db
       - DB_USER=myuser
       - DB_PASSWORD=mypassword
-      - DB_NAME=escola_db
+      - DB_NAME=myappdb
 
     depends_on:
       - db
