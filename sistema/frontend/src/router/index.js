@@ -3,6 +3,8 @@ import Home from '../views/Home.vue'
 import Dashboard from '../views/Dashboard.vue'
 import CadastroUsuario from '../views/CadastroUsuario.vue'
 import Login from '../views/Login.vue'
+import CadastroProfessor from '../views/CadastroProfessor.vue'
+import CadastroEstudante from '../views/CadastroEstudante.vue'
 
 const routes = [
 
@@ -25,6 +27,18 @@ const routes = [
                 ,name:'Usuários'
                 , component: CadastroUsuario
                 , meta: { requiresAuth: true }
+            },
+            {
+                path: 'professor'
+                ,name: 'Professores'
+                ,component: CadastroProfessor
+                ,meta: {requiresAuth: true}
+            },
+            {
+                path: 'estudante'
+                ,name: 'Estudantes'
+                ,component: CadastroEstudante
+                ,meta: {requiresAuth: true}
             }
         ]
     }
