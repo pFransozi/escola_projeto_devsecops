@@ -2,69 +2,77 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Dashboard from '../views/Dashboard.vue'
 import CadastroUsuario from '../views/CadastroUsuario.vue'
-import Login from '../views/Login.vue'
 import CadastroProfessor from '../views/CadastroProfessor.vue'
 import CadastroEstudante from '../views/CadastroEstudante.vue'
+import Login from '../views/Login.vue'
+import Callback from '../views/Callback.vue'
 
 const routes = [
+  { path: '/', redirect: '/login' },
 
-    { path: '/', redirect: '/login' },
-    { path: '/login',name:'Login', component: Login },
-    {
-        path: '/home',
-        name: 'Home',
-        component: Home,
-        children: [
-            { path: '', redirect: '/home/dashboard' },
-            {
-                path: 'dashboard'
-                ,name:"Dashboard"
-                , component: Dashboard
-                , meta: { requiresAuth: true }
-            },
-            {
-                path: 'usuario'
-                ,name:'Usuários'
-                , component: CadastroUsuario
-                , meta: { requiresAuth: true }
-            },
-            {
-                path: 'professor'
-                ,name: 'Professores'
-                ,component: CadastroProfessor
-                ,meta: {requiresAuth: true}
-            },
-            {
-                path: 'estudante'
-                ,name: 'Estudantes'
-                ,component: CadastroEstudante
-                ,meta: {requiresAuth: true}
-            }
-        ]
-    }
+  { 
+    path: '/login', 
+    name: 'Login', 
+    component: Login 
+  },
+
+  { 
+    path: '/callback', 
+    name: 'Callback', 
+    component: Callback 
+  },
+
+  {
+    path: '/home',
+    name: 'Home',
+    component: Home,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cadastro-usuario',
+    name: 'CadastroUsuario',
+    component: CadastroUsuario,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cadastro-professor',
+    name: 'CadastroProfessor',
+    component: CadastroProfessor,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cadastro-estudante',
+    name: 'CadastroEstudante',
+    component: CadastroEstudante,
+    meta: { requiresAuth: true }
+  },
+  // adicione aqui outras rotas protegidas, sempre com meta.requiresAuth se precisar
 ]
 
-const router = createRouter(
-    {
-        history: createWebHistory(),
-        routes
-    }
-)
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
 
-// Guarda global antes de cada navegação
 router.beforeEach((to, from, next) => {
-    const userId = localStorage.getItem('userId')
-    const precisaAuth = to.matched.some(r => r.meta.requiresAuth)
-    
-    if (precisaAuth && !userId) {
-        // se vai para rota protegida e não há token, manda pra login
-        return next({ name: 'Login' })
-    }
-    // se tenta ir ao login mas já está logado, redireciona ao dashboard
-    if (to.name === 'Login' && userId) {
-        return next({ name: 'Dashboard' })
-    }
-    next()
+  const token = localStorage.getItem('idToken')
+  const precisaAuth = to.matched.some(r => r.meta.requiresAuth)
+
+  // Se rota protegida e sem token, redireciona para login
+  if (precisaAuth && !token) {
+    return next({ name: 'Login' })
+  }
+  // Se for para /login mas já estiver logado, vai ao dashboard
+  if (to.name === 'Login' && token) {
+    return next({ name: 'Dashboard' })
+  }
+  next()
 })
 
 export default router
