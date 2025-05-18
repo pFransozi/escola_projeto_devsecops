@@ -10,8 +10,8 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
       MYSQL_ROOT_PASSWORD: rootpass
-    # ports:
-    #   - "3306:3306"
+      # ports:
+      #   - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -20,15 +20,20 @@ services:
   backend:
     build: ./backend
     container_name: flask_backend
+
+    # Carrega variáveis AWS_COGNITO_* e outras do arquivo .env do backend
+    env_file:
+      - ./backend/.env
+
     environment:
-      - FLASK_ENV= development
-      # - FLASK_APP=app/app.py
+      - FLASK_ENV=development
       - FLASK_APP=app.main:create_app
       - FLASK_DEBUG=1
-      - DB_HOST= mysql_db
-      - DB_USER= myuser
-      - DB_PASSWORD= mypassword
-      - DB_NAME= escola_db
+      - DB_HOST=mysql_db
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_NAME=escola_db
+
     depends_on:
       - db
     ports:
@@ -38,11 +43,16 @@ services:
       - backend_net
     volumes:
       - ./backend:/app
-      - ./backend/migrations:/app/migrations 
+      - ./backend/migrations:/app/migrations
 
   frontend:
     build: ./frontend
     container_name: vue_frontend
+
+    # Carrega variáveis VITE_* do arquivo .env do frontend
+    env_file:
+      - ./frontend/.env
+
     depends_on:
       - backend
     ports:
@@ -50,6 +60,7 @@ services:
     networks:
       - backend_net
       - frontend_net
+
 volumes:
   mysql_data:
 

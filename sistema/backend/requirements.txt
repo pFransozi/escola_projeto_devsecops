@@ -3,3 +3,4 @@ flask-cors
 Flask-SQLAlchemy
 mysqlclient
 Flask-Migrate
+PyJWT==2.6.0 
