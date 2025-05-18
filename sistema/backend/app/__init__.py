@@ -18,26 +18,15 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # with app.app_context():
+    #     import app.models
+
     from app.middleware.auth import autenticacao
     app.before_request(autenticacao)
 
     from app.routes.api_bp import api_bp
-    from app.routes.usuario_routes import user_bp
-    from app.routes.auth_routes import auth_bp
-    from app.routes.dashboard_routes import dashboard_bp
-    from app.routes.professor_routes import professor_bp
-    from app.routes.estudante_routes import estudante_bp
-
     app.register_blueprint(api_bp)
     
-    if "user_bp" not in api_bp._blueprints:
-        api_bp.register_blueprint(user_bp, url_prefix="/usuario")
-        api_bp.register_blueprint(auth_bp, url_prefix="/login")
-        api_bp.register_blueprint(dashboard_bp, url_prefix="/dashboard")
-        api_bp.register_blueprint(professor_bp,   url_prefix="/professor")
-        api_bp.register_blueprint(estudante_bp,   url_prefix="/estudante")
-    
-
     from app.routes.teste_db_routes import teste_db_bp
     app.register_blueprint(teste_db_bp)
 
