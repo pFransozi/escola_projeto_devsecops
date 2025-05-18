@@ -9,6 +9,18 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
 
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
+
+axios.interceptors.request.use(
+    config =>{
+      const userId = localStorage.getItem('userId')
+      if (userId){
+        config.headers['X-User-Id'] = userId
+      }
+      return config
+    }
+)
+
 const userId = localStorage.getItem('userId')
 if (userId) {
   axios.defaults.headers.common['X-User-Id'] = userId
@@ -24,4 +36,7 @@ const vuetify = createVuetify({
   }
 })
 
-createApp(App).use(router).use(vuetify).mount('#app')
+createApp(App)
+  .use(router)
+  .use(vuetify)
+  .mount('#app')

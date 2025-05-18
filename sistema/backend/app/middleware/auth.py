@@ -7,7 +7,7 @@ def autenticacao():
     if request.method == "OPTIONS":
         return '', 200
     
-    if request.path in ["/api/login", "/api/usuario", "/ping-db"]:
+    if request.path in ["/api/login", "/ping-db"]:
         return
     
     user_id = request.headers.get("X-User-Id")

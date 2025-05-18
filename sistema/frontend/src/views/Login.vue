@@ -62,6 +62,7 @@
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('userId', user.id)
       router.push('/home')
+      
     } catch (err) {
       erro.value = 'Usuário ou senha inválidos'
       console.error(err)

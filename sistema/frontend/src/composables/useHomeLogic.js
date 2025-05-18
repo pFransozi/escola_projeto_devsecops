@@ -14,10 +14,11 @@ export function useHomeLogic() {
   const initials = user.value.nome[0] + user.value.ultimo_nome[0]
 
   function logout() {
-    localStorage.clear()
-    menuAberto.value = false
-    router.push('/login')
-  }
+  localStorage.removeItem('user')
+  localStorage.removeItem('userId')
+  router.push({ name: 'Login' })
+}
+
 
   return { user, initials, menuAberto, logout }
 }
