@@ -7,6 +7,7 @@ def dashboard_data():
     admins = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Admin).count()
     secretarios = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Secretario).count()
     professores = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Professor).count()
+    estudantes = Usuario.query.filter_by(tipo=UsuarioTipoEnum.Aluno).count()
 
     return jsonify(
         {
@@ -14,5 +15,6 @@ def dashboard_data():
             "admins": admins,
             "secretarios": secretarios,
             "professores": professores,
+            "estudantes":estudantes
         }
     )
