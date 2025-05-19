@@ -9,50 +9,44 @@ import Callback from '../views/Callback.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
-
-  { 
-    path: '/login', 
-    name: 'Login', 
-    component: Login 
-  },
-
-  { 
-    path: '/callback', 
-    name: 'Callback', 
-    component: Callback 
-  },
+  { path: '/login', name: 'Login', component: Login },
+  { path: '/callback', name: 'Callback', component: Callback },
 
   {
     path: '/home',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'dashboard',            // URL: /home/dashboard
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'usuario',              // URL: /home/usuario
+        name: 'CadastroUsuario',
+        component: CadastroUsuario,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'professor',            // URL: /home/professor
+        name: 'CadastroProfessor',
+        component: CadastroProfessor,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'estudante',            // URL: /home/estudante
+        name: 'CadastroEstudante',
+        component: CadastroEstudante,
+        meta: { requiresAuth: true }
+      }
+    ]
   },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/cadastro-usuario',
-    name: 'CadastroUsuario',
-    component: CadastroUsuario,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/cadastro-professor',
-    name: 'CadastroProfessor',
-    component: CadastroProfessor,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/cadastro-estudante',
-    name: 'CadastroEstudante',
-    component: CadastroEstudante,
-    meta: { requiresAuth: true }
-  },
-  // adicione aqui outras rotas protegidas, sempre com meta.requiresAuth se precisar
+
+  // (Opcional) fallback: /* para redirecionar 404 para /home ou /login
+  { path: '/:catchAll(.*)', redirect: '/home' }
 ]
 
 const router = createRouter({
