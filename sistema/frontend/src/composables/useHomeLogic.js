@@ -14,8 +14,8 @@ export function useHomeLogic() {
   const initials = user.value.nome[0] + user.value.ultimo_nome[0]
 
   function logout() {
-  localStorage.removeItem('user')
-  localStorage.removeItem('userId')
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('idToken')
   router.push({ name: 'Login' })
 }
 

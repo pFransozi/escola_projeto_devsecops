@@ -18,6 +18,6 @@ onMounted(() => {
     if (idToken)     localStorage.setItem('idToken', idToken);
     if (accessToken) localStorage.setItem('accessToken', accessToken);
   }
-  router.replace('/'); // volta à rota home
+  router.replace('/home'); // volta à rota home
 });
 </script>
