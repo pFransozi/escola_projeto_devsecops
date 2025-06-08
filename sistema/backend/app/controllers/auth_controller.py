@@ -1,16 +1,17 @@
 import os
 import requests
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, session
 from werkzeug.security import check_password_hash
 from app.utils.jwt import create_access_token, create_refresh_token
-from flask import session
+from app.models.usuario import Usuario
+
 
 # --- Variáveis de Ambiente ---
-COGNITO_DOMAIN        = os.getenv("AWS_COGNITO_DOMAIN")
-COGNITO_REGION        = os.getenv("AWS_COGNITO_REGION", "us-east-2")
-COGNITO_CLIENT_ID     = os.getenv("AWS_COGNITO_CLIENT_ID")
+COGNITO_DOMAIN = os.getenv("AWS_COGNITO_DOMAIN")
+COGNITO_REGION = os.getenv("AWS_COGNITO_REGION", "us-east-2")
+COGNITO_CLIENT_ID = os.getenv("AWS_COGNITO_CLIENT_ID")
 COGNITO_CLIENT_SECRET = os.getenv("AWS_COGNITO_CLIENT_SECRET")
-REDIRECT_URI          = os.getenv("AWS_COGNITO_REDIRECT_URI")
+REDIRECT_URI = os.getenv("AWS_COGNITO_REDIRECT_URI")
 if not all([COGNITO_DOMAIN, COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, REDIRECT_URI]):
     raise RuntimeError(
         "Configure AWS_COGNITO_DOMAIN, AWS_COGNITO_CLIENT_ID, "
@@ -19,8 +20,7 @@ if not all([COGNITO_DOMAIN, COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, REDIRECT_U
 
 # Endpoint de troca de código PKCE por tokens Cognito
 TOKEN_URL = (
-    f"https://{COGNITO_DOMAIN}.auth.{COGNITO_REGION}.amazoncognito.com"
-    "/oauth2/token"
+    f"https://{COGNITO_DOMAIN}.auth.{COGNITO_REGION}.amazoncognito.com" "/oauth2/token"
 )
 
 
@@ -47,12 +47,15 @@ def exchange_code():
         "client_id": COGNITO_CLIENT_ID,
         "code": code,
         "redirect_uri": REDIRECT_URI,
-        "code_verifier": code_verifier
+        "code_verifier": code_verifier,
     }
     auth = (COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET)
     resp = requests.post(TOKEN_URL, data=payload, auth=auth)
     if resp.status_code != 200:
-        return jsonify({"error": "Falha na troca de código", "details": resp.json()}), resp.status_code
+        return (
+            jsonify({"error": "Falha na troca de código", "details": resp.json()}),
+            resp.status_code,
+        )
 
     tokens = resp.json()
     id_token = tokens["id_token"]
@@ -61,31 +64,37 @@ def exchange_code():
 
     # Decodifica ID Token
     from app.utils.jwt import decode_token
+
     claims = decode_token(id_token)
 
     # Monta informações do usuário a partir das claims
     user_info = {
         "id": claims.get("sub"),
         "nome": claims.get("given_name", ""),
-        "email": claims.get("email", "")
+        "email": claims.get("email", ""),
     }
 
     # marca na sessão que é admin
     session.clear()
-    session['user_id']  = user_info['id']
-    session['is_admin'] = True
+    session["user_id"] = user_info["id"]
+    session["is_admin"] = True
 
     # Gera tokens locais
     local_access = create_access_token(identity=user_info["id"])
     local_refresh = create_refresh_token(identity=user_info["id"])
 
-    response = make_response(jsonify({
-        "id_token": id_token,
-        "access_token": local_access,
-        "token_type": "Bearer",
-        "expires_in": expires_in,
-        "user": user_info
-    }), 200)
+    response = make_response(
+        jsonify(
+            {
+                "id_token": id_token,
+                "access_token": local_access,
+                "token_type": "Bearer",
+                "expires_in": expires_in,
+                "user": user_info,
+            }
+        ),
+        200,
+    )
     # Cookie HttpOnly com refresh_token do Cognito
     secure_flag = os.getenv("FLASK_ENV") == "production"
     response.set_cookie(
@@ -94,40 +103,42 @@ def exchange_code():
         httponly=True,
         secure=secure_flag,
         samesite="Lax",
-        max_age=30 * 24 * 3600
+        max_age=30 * 24 * 3600,
     )
     return response
 
 
 def login_local():
-    """
-    POST /api/auth/login
-    Autenticação local (professor, aluno etc.).
-    """
-    from app.models.usuario import Usuario
-
     data = request.get_json(force=True)
+    # username = data.get("username")
+    # password = data.get("password")
+
     username = data.get("username")
     password = data.get("password")
+
     if not username or not password:
         return jsonify({"error": "Username e senha são obrigatórios"}), 400
 
+    # user = Usuario.query.filter_by(usuario=username).first()
+    # if not user or not check_password_hash(user.senha_hash, password):
     user = Usuario.query.filter_by(usuario=username).first()
-    if not user or not check_password_hash(user.senha_hash, password):
+    if not user or not check_password_hash(user.senha, password):
         return jsonify({"error": "Credenciais inválidas"}), 401
 
-    access = create_access_token(identity=user.id)
-    refresh = create_refresh_token(identity=user.id)
+    # --- Token-based: gera JWT local (HS256) ---
+    access_token = create_access_token(identity=user.id)
+    refresh_token = create_refresh_token(identity=user.id)
 
-    session.clear()
-    session['user_id']  = user.id
-    session['is_admin'] = False
-
-    return jsonify({
-        "access_token": access,
-        "refresh_token": refresh,
-        "user": {"id": user.id, "nome": user.nome, "email": user.email}
-    }), 200
+    return (
+        jsonify(
+            {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "user": {"id": user.id, "nome": user.nome, "email": user.email},
+            }
+        ),
+        200,
+    )
 
 
 def refresh_token():
@@ -142,4 +153,5 @@ def refresh_token():
         user_id = get_jwt_identity()
         new_access = create_access_token(identity=user_id)
         return jsonify({"access_token": new_access}), 200
+
     return _inner()
