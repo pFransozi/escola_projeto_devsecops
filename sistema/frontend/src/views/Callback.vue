@@ -15,20 +15,16 @@
 </template>
 
 <script setup>
-// Callback.vue
 import { onMounted, ref } from 'vue'
 import { useRouter }      from 'vue-router'
 import axios              from 'axios'
 
-// Captura o router e estado de erro
 const router = useRouter()
 const erro   = ref('')
 
-// Chaves no localStorage
-const ID_TOKEN_KEY     = 'idToken'
-const ACCESS_TOKEN_KEY = 'accessToken'
+const ID_TOKEN_KEY = 'token'
+const USER_KEY     = 'user'
 
-// Função para decodificar JWT (ID Token)
 function parseJwt(token) {
   const base64 = token.split('.')[1]
     .replace(/-/g, '+')
@@ -42,7 +38,7 @@ function parseJwt(token) {
   return JSON.parse(json)
 }
 
-onMounted(async () => {
+onMounted(() => {
   try {
     const hash = window.location.hash
     if (!hash.startsWith('#')) {
@@ -50,48 +46,39 @@ onMounted(async () => {
       return
     }
 
-    // Extrai tokens do fragmento
-    const params      = new URLSearchParams(hash.slice(1))
-    const idToken     = params.get('id_token')
-    const accessToken = params.get('access_token')
-
-    // Remove o hash da URL
-    window.history.replaceState(null, '', window.location.pathname)
-
-    if (idToken) {
-      // Armazena o ID Token e configura o Axios
-      localStorage.setItem(ID_TOKEN_KEY, idToken)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`
-
-      // Decodifica para obter nome e sobrenome
-      const payload = parseJwt(idToken)
-      localStorage.setItem('user', JSON.stringify({
-        nome:        payload.given_name  || '',
-        ultimo_nome: payload.family_name || '',
-        email:       payload.email       || ''
-      }))
-
-    } else if (accessToken) {
-      // Se preferir usar o UserInfo endpoint:
-      localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
-      const userInfo = await axios.get(
-        `https://${import.meta.env.VITE_COGNITO_DOMAIN}/oauth2/userInfo`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      )
-      const { given_name, family_name, email } = userInfo.data
-      localStorage.setItem('user', JSON.stringify({
-        nome:        given_name,
-        ultimo_nome: family_name,
-        email
-      }))
+    const params  = new URLSearchParams(hash.slice(1))
+    const idToken = params.get('id_token')
+    if (!idToken) {
+      erro.value = 'ID Token não retornado pelo Cognito.'
+      return
     }
+
+    // Salva o token e configura o axios
+    localStorage.setItem(ID_TOKEN_KEY, idToken)
+    axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`
+
+    // Decodifica o JWT para extrair nome e sobrenome
+    const payload      = parseJwt(idToken)
+    const givenName    = payload.given_name  || ''
+    const familyName   = payload.family_name || ''
+    const email        = payload.email       || ''
+
+    // Salva o usuário no localStorage
+    localStorage.setItem(USER_KEY, JSON.stringify({
+      nome:        givenName,
+      ultimo_nome: familyName,
+      email
+    }))
+
+    // Limpa o hash da URL
+    window.history.replaceState(null, '', window.location.pathname)
 
     // Redireciona para a Home
     router.replace('/home')
 
   } catch (e) {
-    console.error('Erro no callback:', e)
-    erro.value = 'Falha ao processar autenticação.'
+    console.error('Erro no Callback.vue:', e)
+    erro.value = 'Falha ao processar o callback de autenticação.'
   }
 })
 </script>

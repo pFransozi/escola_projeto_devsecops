@@ -54,6 +54,11 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { useHomeLogic } from '../composables/useHomeLogic.js'
 const { user, initials, menuAberto, logout } = useHomeLogic()
+
+onMounted(() => {
+  user.value = JSON.parse(localStorage.getItem('user'))
+})
 </script>

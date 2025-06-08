@@ -86,7 +86,7 @@ import axios from 'axios'
 const dialog = ref(false)
 const loading = ref(false)
 const dateMenu = ref(false)
-const tipos = ['admin', 'secretario', 'professor', 'aluno']
+const tipos = ['secretario', 'professor', 'aluno']
 const usuarios = ref([])
 const editedIndex = ref(-1)
 const editedItem = ref({

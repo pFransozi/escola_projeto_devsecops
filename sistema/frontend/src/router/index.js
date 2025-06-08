@@ -17,6 +17,7 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: { requiresAuth: true },
+    redirect: '/home/dashboard',
     children: [
       {
         path: 'dashboard',            // URL: /home/dashboard
@@ -46,7 +47,7 @@ const routes = [
   },
 
   // (Opcional) fallback: /* para redirecionar 404 para /home ou /login
-  { path: '/:catchAll(.*)', redirect: '/home' }
+  { path: '/:catchAll(.*)', redirect: '/login' }
 ]
 
 const router = createRouter({
@@ -55,7 +56,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('idToken')
+  const token = localStorage.getItem('token')
   const precisaAuth = to.matched.some(r => r.meta.requiresAuth)
 
   // Se rota protegida e sem token, redireciona para login
