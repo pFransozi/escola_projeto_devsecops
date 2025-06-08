@@ -98,7 +98,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
+import { api } from '../utils/api'
 
 const dialog = ref(false)
 const loading = ref(false)
@@ -128,7 +129,7 @@ const headers = [
 async function fetchEstudantes() {
   loading.value = true
   try {
-    const res = await axios.get('/estudante')
+    const res = await api.get('/estudante')
     estudantes.value = res.data.data
   } catch (err) {
     console.error('Erro ao carregar estudantes:', err)
@@ -139,7 +140,7 @@ async function fetchEstudantes() {
 
 async function fetchUsuariosAluno() {
   try {
-    const res = await axios.get('/usuario')
+    const res = await api.get('/usuario')
     usuariosAluno.value = res.data.data
       .filter(u => u.tipo === 'aluno')
       .map(u => ({ label: `${u.nome} ${u.ultimo_nome}`, value: u.id }))
@@ -167,9 +168,9 @@ async function save() {
   const payload = { ...editedItem.value }
   try {
     if (editedIndex.value > -1) {
-      await axios.put(`/estudante/${payload.id}`, payload)
+      await api.api(`/estudante/${payload.id}`, payload)
     } else {
-      await axios.post('/estudante', payload)
+      await api.api('/estudante', payload)
     }
     await fetchEstudantes()
     closeDialog()
@@ -180,7 +181,7 @@ async function save() {
 
 function confirmDelete(item) {
   if (confirm(`Deseja remover o estudante ${item.nome_estudante}?`)) {
-    axios
+    api
       .delete(`/estudante/${item.id}`)
       .then(fetchEstudantes)
       .catch(err => alert(err.response?.data?.message || 'Erro ao deletar'))

@@ -81,7 +81,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { api } from '../utils/api'
 
 const dialog = ref(false)
 const loading = ref(false)
@@ -114,8 +114,8 @@ const headers = [
 
 function fetchUsers() {
   loading.value = true
-  axios
-    .get(import.meta.env.VITE_API_URL + '/usuario')
+  api
+    .get('/usuario')
     .then(response => {
       usuarios.value = response.data.data
     })
@@ -182,13 +182,13 @@ function save() {
   payload.data_nascimento = formatarDataParaEnvio(payload.data_nascimento)
   let request
   if (editedIndex.value > -1) {
-    request = axios.put(
-      import.meta.env.VITE_API_URL + `/usuario/${payload.id}`,
+    request = api.put(
+      `/usuario/${payload.id}`,
       payload
     )
   } else {
-    request = axios.post(
-      import.meta.env.VITE_API_URL + '/usuario',
+    request = api.post(
+      '/usuario',
       payload
     )
   }
@@ -204,8 +204,8 @@ function save() {
 
 function confirmDelete(item) {
   if (confirm(`Deseja remover o usuário ${item.nome}?`)) {
-    axios
-      .delete(import.meta.env.VITE_API_URL + `/usuario/${item.id}`)
+    api
+      .delete(`/usuario/${item.id}`)
       .then(fetchUsers)
       .catch(err => alert(err.response.data.message || 'Erro ao deletar'))
   }
