@@ -1,31 +1,27 @@
-#!/bin/bash
-set -e
+#!/bin/sh
 
-echo "Iniciando o container do Flask Backend."
+export FLASK_APP=app
 
-MYSQL_HOST=${MYSQL_HOST:-mysql_db}
-echo "Aguardando o banco de dados MySQL em $MYSQL_HOST:3306..."
-
-until nc -z "$MYSQL_HOST" 3306; do
-  echo "Banco ainda não está disponível... tentando novamente em 1s."
+echo "Waiting for database..."
+timeout=60
+count=0
+while ! nc -z db 3306; do
   sleep 1
+  count=$((count+1))
+  if [ $count -ge $timeout ]; then
+    echo "Banco de dados não respondeu após $timeout segundos, abortando."
+    exit 1
+  fi
 done
+echo "Database connection is ready."
 
-echo "Banco de dados está pronto."
-
-# Verifica se o diretório de migração já existe
-if [ ! -f "migrations/env.py" ]; then
-  echo "Inicializando estrutura de migração (flask db init)..."
-  flask db init
-  echo "Criando primeira migração (flask db migrate)..."
-  flask db migrate -m "Migração inicial automática"
+if [ ! -d "migrations" ]; then
+    echo "Initializing database migrations folder..."
+    flask db init
 fi
 
-echo "Aplicando migrações (flask db upgrade)..."
+echo "Applying database migrations..."
 flask db upgrade
 
-# echo "Verificando/criando usuário admin..."
-# python create_admin.py
-
-echo "Iniciando servidor Flask..."
-exec flask run --host=0.0.0.0 --port=5000
+echo "Starting Flask development server..."
+exec flask run --host=0.0.0.0
