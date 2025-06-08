@@ -24,8 +24,8 @@ fi
 echo "Aplicando migrações (flask db upgrade)..."
 flask db upgrade
 
-echo "Verificando/criando usuário admin..."
-python create_admin.py
+# echo "Verificando/criando usuário admin..."
+# python create_admin.py
 
 echo "Iniciando servidor Flask..."
 exec flask run --host=0.0.0.0 --port=5000

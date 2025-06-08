@@ -45,7 +45,6 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Conteúdo principal -->
     <v-main>
       <v-container fluid>
         <router-view />

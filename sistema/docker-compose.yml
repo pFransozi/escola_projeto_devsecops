@@ -25,15 +25,6 @@ services:
     env_file:
       - ./backend/.env
 
-    environment:
-      - FLASK_ENV=development
-      - FLASK_APP=app.main:create_app
-      - FLASK_DEBUG=1
-      - DB_HOST=mysql_db
-      - DB_USER=myuser
-      - DB_PASSWORD=mypassword
-      - DB_NAME=myappdb
-
     depends_on:
       - db
     ports:
