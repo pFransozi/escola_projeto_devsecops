@@ -81,8 +81,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { api } from '../utils/api'
+
 
 const router = useRouter()
 const dialog = ref(false)
@@ -108,7 +110,7 @@ const headers = [
 async function fetchProfessores() {
   loading.value = true
   try {
-    const res = await axios.get('/professor')
+    const res = await api.get('/professor')
     professores.value = res.data.data
   } finally {
     loading.value = false
@@ -117,7 +119,7 @@ async function fetchProfessores() {
 
 async function fetchUsuariosProf() {
   // todos os usuários do tipo "professor"
-  const res = await axios.get('/usuario')
+  const res = await api.get('/usuario')
   usuariosProf.value = res.data.data
     .filter(u => u.tipo === 'professor')
     .map(u => ({
@@ -145,9 +147,9 @@ async function save() {
   const payload = { ...editedItem.value }
   try {
     if (editedIndex.value > -1) {
-      await axios.put(`/professor/${payload.id}`, payload)
+      await api.put(`/professor/${payload.id}`, payload)
     } else {
-      await axios.post('/professor', payload)
+      await api.post('/professor', payload)
     }
     await fetchProfessores()
     closeDialog()
@@ -158,7 +160,7 @@ async function save() {
 
 function confirmDelete(item) {
   if (confirm(`Deseja remover o professor ${item.nome_usuario}?`)) {
-    axios
+    api
       .delete(`/professor/${item.id}`)
       .then(fetchProfessores)
       .catch(err => alert(err.response?.data?.message || 'Erro ao deletar'))

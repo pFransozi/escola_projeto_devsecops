@@ -1,31 +1,9 @@
-# app/controllers/auth_controller.py
-"""
-Módulo de autenticação do sistema escolar:
-
-Fluxos:
-1. **Login via Cognito (administradores)**
-   - Endpoint: POST /api/auth/callback
-   - Autenticação PKCE + Hosted UI Cognito.
-   - Troca `code`/`code_verifier` por tokens do Cognito.
-   - Decodifica ID Token (RS256) e extrai claims.
-   - Gera tokens locais JWT-HS256 usando `sub` do Cognito como identidade.
-   - Retorna JSON com `id_token`, `access_token`, `refresh_token` em cookie e dados do usuário.
-
-2. **Login Local (professor, aluno, etc.)**
-   - Endpoint: POST /api/auth/login
-   - Valida `username`/`password` no banco local (`Usuario`).
-   - Gera tokens locais JWT-HS256.
-
-3. **Refresh de Token**
-   - Endpoint: POST /api/auth/refresh
-   - Renova apenas o `access_token` local via JWT-Extended.
-"""
-
 import os
 import requests
 from flask import request, jsonify, make_response
 from werkzeug.security import check_password_hash
 from app.utils.jwt import create_access_token, create_refresh_token
+from flask import session
 
 # --- Variáveis de Ambiente ---
 COGNITO_DOMAIN        = os.getenv("AWS_COGNITO_DOMAIN")
@@ -92,6 +70,11 @@ def exchange_code():
         "email": claims.get("email", "")
     }
 
+    # marca na sessão que é admin
+    session.clear()
+    session['user_id']  = user_info['id']
+    session['is_admin'] = True
+
     # Gera tokens locais
     local_access = create_access_token(identity=user_info["id"])
     local_refresh = create_refresh_token(identity=user_info["id"])
@@ -104,11 +87,12 @@ def exchange_code():
         "user": user_info
     }), 200)
     # Cookie HttpOnly com refresh_token do Cognito
+    secure_flag = os.getenv("FLASK_ENV") == "production"
     response.set_cookie(
         "refresh_token",
         refresh_token,
         httponly=True,
-        secure=True,
+        secure=secure_flag,
         samesite="Lax",
         max_age=30 * 24 * 3600
     )
@@ -134,6 +118,11 @@ def login_local():
 
     access = create_access_token(identity=user.id)
     refresh = create_refresh_token(identity=user.id)
+
+    session.clear()
+    session['user_id']  = user.id
+    session['is_admin'] = False
+
     return jsonify({
         "access_token": access,
         "refresh_token": refresh,

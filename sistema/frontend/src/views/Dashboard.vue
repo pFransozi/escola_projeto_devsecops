@@ -19,12 +19,12 @@
           <div class="text-h3">{{ stats.secretarios }}</div>
         </v-card>
       </v-col>
-      <v-col cols="3">
+      <!-- <v-col cols="3">
         <v-card class="pa-4">
           <div class="text-h5">Administradores</div>
           <div class="text-h3">{{ stats.admins }}</div>
         </v-card>
-      </v-col>
+      </v-col> -->
       <!-- Novo card de Alunos -->
       <v-col cols="3">
         <v-card class="pa-4">
@@ -42,7 +42,6 @@ import axios from 'axios'
 
 const stats = reactive({
   users: 0,
-  admins: 0,
   secretarios: 0,
   professores: 0,
   estudantes: 0      // inicializa

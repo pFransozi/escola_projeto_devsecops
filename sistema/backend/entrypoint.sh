@@ -14,7 +14,7 @@ done
 echo "Banco de dados está pronto."
 
 # Verifica se o diretório de migração já existe
-if [ ! -f "migrations/env.py" ]; then
+if [ ! -d "./migrations" ]; then
   echo "Inicializando estrutura de migração (flask db init)..."
   flask db init
   echo "Criando primeira migração (flask db migrate)..."
@@ -24,8 +24,12 @@ fi
 echo "Aplicando migrações (flask db upgrade)..."
 flask db upgrade
 
-# echo "Verificando/criando usuário admin..."
-# python create_admin.py
+python - <<'EOF'
+from app import create_app, db
+app = create_app()
+with app.app_context():
+    db.create_all()
+EOF
 
 echo "Iniciando servidor Flask..."
 exec flask run --host=0.0.0.0 --port=5000

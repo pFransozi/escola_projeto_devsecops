@@ -19,7 +19,8 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'                   // ← volte a importar o axios global
 import { scheduleTokenCheck, parseJwt, setToken } from '../utils/auth'
-import { authClient } from '../utils/authClient'
+// import { authClient } from '../utils/authClient'
+import { api } from '../utils/api'
 
 const router = useRouter()
 const erro = ref('')
@@ -47,7 +48,7 @@ onMounted(async () => {
 
     // 3) Troca o code por tokens no back-end
     //    Capturamos a resposta em `res`
-    const res = await authClient.post('/auth/callback', {
+    const res = await api.post('/auth/callback', {
       code,
       code_verifier: codeVerifier
     })
