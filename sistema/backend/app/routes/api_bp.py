@@ -11,7 +11,8 @@ from app.routes.estudante_routes import estudante_bp
 
 # Registro dos sub-blueprints no api_bp
 api_bp.register_blueprint(user_bp, url_prefix="/usuario")
-api_bp.register_blueprint(auth_bp, url_prefix="/login")
+# api_bp.register_blueprint(auth_bp, url_prefix="/login")
+api_bp.register_blueprint(auth_bp,      url_prefix="/auth")
 api_bp.register_blueprint(dashboard_bp, url_prefix="/dashboard")
 api_bp.register_blueprint(professor_bp, url_prefix="/professor")
 api_bp.register_blueprint(estudante_bp, url_prefix="/estudante")

@@ -6,9 +6,9 @@ from flask import request, g, jsonify
 from app.models.usuario import Usuario  # importa seu modelo
 
 # Carrega as variáveis do Cognito do ambiente
-COGNITO_REGION        = os.getenv('AWS_COGNITO_REGION')
-COGNITO_USER_POOL_ID  = os.getenv('AWS_COGNITO_USER_POOL_ID')
-COGNITO_APP_CLIENT_ID = os.getenv('AWS_COGNITO_CLIENT_ID')
+COGNITO_REGION = os.getenv("AWS_COGNITO_REGION")
+COGNITO_USER_POOL_ID = os.getenv("AWS_COGNITO_USER_POOL_ID")
+COGNITO_APP_CLIENT_ID = os.getenv("AWS_COGNITO_CLIENT_ID")
 
 # Endpoint JWKS para obter as chaves públicas do Cognito
 jwks_url = (
@@ -17,10 +17,14 @@ jwks_url = (
 )
 jwks_client = PyJWKClient(jwks_url)
 
+
 def autenticacao():
     # Permite preflight de CORS
     if request.method == "OPTIONS":
-        return '', 200
+        return "", 200
+
+    if request.path.startswith("/api/auth"):
+        return None
 
     # Captura header Authorization
     auth_header = request.headers.get("Authorization")
@@ -49,7 +53,7 @@ def autenticacao():
             issuer=(
                 f"https://cognito-idp.{COGNITO_REGION}.amazonaws.com/"
                 f"{COGNITO_USER_POOL_ID}"
-            )
+            ),
         )
     except jwt.ExpiredSignatureError:
         return jsonify({"error": "Não autorizado: token expirado"}), 401
@@ -57,14 +61,17 @@ def autenticacao():
         return jsonify({"error": "Não autorizado: token inválido"}), 401
 
     # Sincroniza usuário Cognito ↔ banco local
-    sub   = payload.get("sub")
+    sub = payload.get("sub")
     email = payload.get("email")
 
     usuario = Usuario.get_by_cognito_sub_or_email(sub, email)
     if not usuario:
-        return jsonify({
-            "error": "Usuário não cadastrado no sistema. Contate o administrador."
-        }), 403
+        return (
+            jsonify(
+                {"error": "Usuário não cadastrado no sistema. Contate o administrador."}
+            ),
+            403,
+        )
 
     # Anexa o objeto Usuario do SQLAlchemy ao contexto
     g.user = usuario

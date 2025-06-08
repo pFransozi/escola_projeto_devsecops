@@ -1,11 +1,11 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card class="pa-6" width="400" elevation="10">
-      <!-- Título -->
       <v-card-title class="text-h5 justify-center mb-4">
         Entrar no Sistema
       </v-card-title>
 
+      <!-- ===== LOGIN LOCAL ===== -->
       <v-form @submit.prevent="loginLocal" ref="form" lazy-validation>
         <v-text-field
           v-model="usuario"
@@ -14,7 +14,6 @@
           :rules="[rules.required]"
           required
         />
-
         <v-text-field
           v-model="senha"
           label="Senha"
@@ -23,7 +22,6 @@
           :rules="[rules.required]"
           required
         />
-
         <v-btn
           type="submit"
           color="primary"
@@ -33,16 +31,15 @@
         >
           Entrar
         </v-btn>
-
         <v-alert v-if="erroLocal" type="error" class="mt-4" dense>
           {{ erroLocal }}
         </v-alert>
       </v-form>
 
-      <!-- Separador visual -->
+      <!-- ===== DIVISOR ===== -->
       <v-divider class="my-4" />
 
-      <!-- Botão de login via Cognito -->
+      <!-- ===== LOGIN COGNITO ===== -->
       <v-btn
         color="orange darken-2"
         class="mt-2"
@@ -53,7 +50,6 @@
         <v-icon left>mdi-aws</v-icon>
         Entrar com Cognito
       </v-btn>
-
       <v-alert v-if="erroCognito" type="error" class="mt-4" dense>
         {{ erroCognito }}
       </v-alert>
@@ -62,12 +58,11 @@
 </template>
 
 <script setup>
-import {setToken, getToken} from '../utils/auth.js'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import pkceChallenge from 'pkce-challenge'
 
-// Estado
 const usuario           = ref('')
 const senha             = ref('')
 const erroLocal         = ref('')
@@ -76,39 +71,29 @@ const erroCognito       = ref('')
 const carregandoCognito = ref(false)
 const form              = ref(null)
 
-// Validação
-const rules = {
-  required: v => !!v || 'Este campo é obrigatório'
-}
-
-// Router e ambiente
 const router      = useRouter()
 const apiUrl      = import.meta.env.VITE_API_URL
 const domain      = import.meta.env.VITE_COGNITO_DOMAIN
 const clientId    = import.meta.env.VITE_COGNITO_CLIENT_ID
 const redirectUri = import.meta.env.VITE_REDIRECT_URI
 
-// Configura Axios se já houver ID Token
-// const existing = localStorage.getItem('token')
-const existing = getToken()
-if (existing) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${existing}`
+const rules = {
+  required: v => !!v || 'Este campo é obrigatório'
 }
 
-// Login local (backend)
+// ===== LOGIN LOCAL =====
 async function loginLocal() {
   erroLocal.value = ''
   if (!(await form.value.validate())) return
 
   carregandoLocal.value = true
   try {
-    const res = await axios.post(`${apiUrl}/login`, {
+    const res = await axios.post(`${apiUrl}/auth/login`, {
       usuario: usuario.value,
       senha:   senha.value
     })
     const { token, user } = res.data
-    // localStorage.setItem('token', token)
-    setToken(token)
+    localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(user))
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     router.push('/home')
@@ -120,17 +105,24 @@ async function loginLocal() {
   }
 }
 
-// Login via Cognito Hosted UI
-function loginCognito() {
+// ===== LOGIN COGNITO PKCE =====
+async function loginCognito() {
   erroCognito.value       = ''
   carregandoCognito.value = true
 
+  // gera code_verifier + code_challenge
+  const { code_verifier, code_challenge } = await pkceChallenge()
+  sessionStorage.setItem('pkce_verifier', code_verifier)
+
   const loginUrl =
-    `https://${domain}/login` +
-    `?client_id=${clientId}` +
-    `&response_type=token` +
+    `https://${domain}/oauth2/authorize?` +
+    `client_id=${clientId}` +
+    `&response_type=code` +
     `&scope=openid+email+profile` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}`
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&code_challenge_method=S256` +
+    `&code_challenge=${code_challenge}`
+
   window.location.href = loginUrl
 }
 </script>
