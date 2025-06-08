@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+import {setToken, getToken} from '../utils/auth.js'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
@@ -88,7 +89,8 @@ const clientId    = import.meta.env.VITE_COGNITO_CLIENT_ID
 const redirectUri = import.meta.env.VITE_REDIRECT_URI
 
 // Configura Axios se já houver ID Token
-const existing = localStorage.getItem('token')
+// const existing = localStorage.getItem('token')
+const existing = getToken()
 if (existing) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${existing}`
 }
@@ -105,7 +107,8 @@ async function loginLocal() {
       senha:   senha.value
     })
     const { token, user } = res.data
-    localStorage.setItem('token', token)
+    // localStorage.setItem('token', token)
+    setToken(token)
     localStorage.setItem('user', JSON.stringify(user))
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     router.push('/home')

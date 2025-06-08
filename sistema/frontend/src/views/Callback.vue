@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+import { scheduleTokenCheck, parseJwt, setToken } from '../utils/auth'
 import { onMounted, ref } from 'vue'
 import { useRouter }      from 'vue-router'
 import axios              from 'axios'
@@ -25,18 +26,18 @@ const erro   = ref('')
 const ID_TOKEN_KEY = 'token'
 const USER_KEY     = 'user'
 
-function parseJwt(token) {
-  const base64 = token.split('.')[1]
-    .replace(/-/g, '+')
-    .replace(/_/g, '/')
-  const json = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
-  )
-  return JSON.parse(json)
-}
+// function parseJwt(token) {
+//   const base64 = token.split('.')[1]
+//     .replace(/-/g, '+')
+//     .replace(/_/g, '/')
+//   const json = decodeURIComponent(
+//     atob(base64)
+//       .split('')
+//       .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+//       .join('')
+//   )
+//   return JSON.parse(json)
+// }
 
 onMounted(() => {
   try {
@@ -54,7 +55,9 @@ onMounted(() => {
     }
 
     // Salva o token e configura o axios
-    localStorage.setItem(ID_TOKEN_KEY, idToken)
+    // localStorage.setItem(ID_TOKEN_KEY, idToken)
+    setToken(idToken)
+    scheduleTokenCheck()
     axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`
 
     // Decodifica o JWT para extrair nome e sobrenome
