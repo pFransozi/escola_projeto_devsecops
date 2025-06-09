@@ -42,4 +42,8 @@ EOF
 
 echo "Starting Flask development server..."
 # Inicia a aplicação Flask, permitindo acesso de qualquer IP na porta 5000
-exec flask run --host=0.0.0.0 --port=5000
+#exec flask run --host=0.0.0.0 --port=5000
+
+echo "Iniciando servidor Flask..."
+# exec flask run --host=0.0.0.0 --port=5000
+exec python -m app.main
