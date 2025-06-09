@@ -115,7 +115,7 @@ const headers = [
 function fetchUsers() {
   loading.value = true
   api
-    .get('/usuario')
+    .get('/api/usuario')
     .then(response => {
       usuarios.value = response.data.data
     })
@@ -183,12 +183,12 @@ function save() {
   let request
   if (editedIndex.value > -1) {
     request = api.put(
-      `/usuario/${payload.id}`,
+      `/api/usuario/${payload.id}`,
       payload
     )
   } else {
     request = api.post(
-      '/usuario',
+      '/api/usuario',
       payload
     )
   }
@@ -205,7 +205,7 @@ function save() {
 function confirmDelete(item) {
   if (confirm(`Deseja remover o usuário ${item.nome}?`)) {
     api
-      .delete(`/usuario/${item.id}`)
+      .delete(`/api/usuario/${item.id}`)
       .then(fetchUsers)
       .catch(err => alert(err.response.data.message || 'Erro ao deletar'))
   }

@@ -48,7 +48,7 @@ onMounted(async () => {
 
     // 3) Troca o code por tokens no back-end
     //    Capturamos a resposta em `res`
-    const res = await api.post('/auth/callback', {
+    const res = await api.post('/api/auth/callback', {
       code,
       code_verifier: codeVerifier
     })

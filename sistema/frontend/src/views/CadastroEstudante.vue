@@ -129,7 +129,7 @@ const headers = [
 async function fetchEstudantes() {
   loading.value = true
   try {
-    const res = await api.get('/estudante')
+    const res = await api.get('/api/estudante')
     estudantes.value = res.data.data
   } catch (err) {
     console.error('Erro ao carregar estudantes:', err)
@@ -140,7 +140,7 @@ async function fetchEstudantes() {
 
 async function fetchUsuariosAluno() {
   try {
-    const res = await api.get('/usuario')
+    const res = await api.get('/api/usuario')
     usuariosAluno.value = res.data.data
       .filter(u => u.tipo === 'aluno')
       .map(u => ({ label: `${u.nome} ${u.ultimo_nome}`, value: u.id }))
@@ -168,9 +168,9 @@ async function save() {
   const payload = { ...editedItem.value }
   try {
     if (editedIndex.value > -1) {
-      await api.api(`/estudante/${payload.id}`, payload)
+      await api.api(`/api/estudante/${payload.id}`, payload)
     } else {
-      await api.api('/estudante', payload)
+      await api.api('/api/estudante', payload)
     }
     await fetchEstudantes()
     closeDialog()

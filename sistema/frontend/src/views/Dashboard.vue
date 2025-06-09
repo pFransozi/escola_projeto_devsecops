@@ -39,6 +39,8 @@
 <script setup>
 import { reactive, onMounted } from 'vue'
 import axios from 'axios'
+import { api } from '../utils/api'
+
 
 const stats = reactive({
   users: 0,
@@ -49,7 +51,8 @@ const stats = reactive({
 
 async function fetchDashboard() {
   try {
-    const res = await axios.get(import.meta.env.VITE_API_URL + '/dashboard')
+    //import.meta.env.VITE_API_URL
+    const res = await api.get('/api/dashboard')
     Object.assign(stats, res.data)  // inclui também stats.alunos
   } catch (err) {
     console.error('Erro ao carregar dashboard:', err)

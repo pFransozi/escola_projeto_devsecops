@@ -110,7 +110,7 @@ const headers = [
 async function fetchProfessores() {
   loading.value = true
   try {
-    const res = await api.get('/professor')
+    const res = await api.get('/api/professor')
     professores.value = res.data.data
   } finally {
     loading.value = false
@@ -119,7 +119,7 @@ async function fetchProfessores() {
 
 async function fetchUsuariosProf() {
   // todos os usuários do tipo "professor"
-  const res = await api.get('/usuario')
+  const res = await api.get('/api/usuario')
   usuariosProf.value = res.data.data
     .filter(u => u.tipo === 'professor')
     .map(u => ({
@@ -147,9 +147,9 @@ async function save() {
   const payload = { ...editedItem.value }
   try {
     if (editedIndex.value > -1) {
-      await api.put(`/professor/${payload.id}`, payload)
+      await api.put(`/api/professor/${payload.id}`, payload)
     } else {
-      await api.post('/professor', payload)
+      await api.post('/api/professor', payload)
     }
     await fetchProfessores()
     closeDialog()

@@ -67,7 +67,7 @@ async function loginLocal() {
   
   try {
     // 1) Faz POST via cookie-based API
-    const res = await api.post('/auth/login', {
+    const res = await api.post('/api/auth/login', {
       username: usuario.value,
       password: senha.value
     })

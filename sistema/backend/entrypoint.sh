@@ -32,4 +32,5 @@ with app.app_context():
 EOF
 
 echo "Iniciando servidor Flask..."
-exec flask run --host=0.0.0.0 --port=5000
+# exec flask run --host=0.0.0.0 --port=5000
+exec python -m app.main

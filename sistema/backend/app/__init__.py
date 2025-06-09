@@ -20,7 +20,7 @@ def create_app():
     # no create_app()
     CORS(
     app,
-    resources={r"/api/*": {"origins": "http://localhost:3000"}},
+    resources={r"/api/*": {"origins": "https://localhost:3443"}},
     supports_credentials=True
     )
 
