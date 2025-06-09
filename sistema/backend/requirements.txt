@@ -1,11 +1,17 @@
-Flask==2.2.5
+Flask==2.1.2
+Flask-SQLAlchemy==2.5.1
+Flask-Migrate==3.1.0
 flask-cors
-Flask-SQLAlchemy
-mysqlclient
-Flask-Migrate
-# PyJWT==2.6.0
-PyJWT>=2.0.0
-requests>=2.0.0
-python-dotenv>=0.19.0
+Flask-Login==0.6.2
+Flask-WTF==1.0.1
+Flask-Bcrypt==1.0.1
 Flask-JWT-Extended>=4.4.0
+SQLAlchemy==1.4.0
+mysqlclient==2.1.0
+python-dotenv>=0.19.0
+PyJWT>=2.0.0
 cryptography>=41.0.0
+Werkzeug==2.2.3
+flask_cors==3.0.10
+requests>=2.0.0
+# PyJWT==2.6.0
