@@ -11,7 +11,7 @@
     "pkce-challenge": "^5.0.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
-    "vuetify": "^3.3.5"
+    "vuetify": "^3.8.5"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
