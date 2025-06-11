@@ -37,7 +37,8 @@ services:
     # Carrega variáveis AWS_COGNITO_* e outras do arquivo .env do backend
     env_file:
       - ./backend/.env
-
+    environment:
+      - PYTHONPATH=/app
     depends_on:
       - db
     ports:

@@ -2,13 +2,11 @@ from flask import Flask
 from flask_cors import CORS
 from app.infra.extensions import db, migrate
 import os
+from .config import config_by_name
 
-# db = SQLAlchemy()
-# migrate = Migrate()
-
-
-def create_app():
+def create_app(config_name='development'):
     app = Flask(__name__)
+    app.config.from_object(config_by_name[config_name])
     app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://myuser:mypassword@mysql_db/myappdb"
