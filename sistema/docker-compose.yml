@@ -33,8 +33,7 @@ services:
   backend:
     build: ./backend
     container_name: flask_backend
-
-    # Carrega variáveis AWS_COGNITO_* e outras do arquivo .env do backend
+    restart: always
     env_file:
       - ./backend/.env
     environment:
@@ -53,11 +52,9 @@ services:
   frontend:
     build: ./frontend
     container_name: vue_frontend
-
-    # Carrega variáveis VITE_* do arquivo .env do frontend
+    restart: always
     env_file:
       - ./frontend/.env
-
     depends_on:
       - backend
     ports:
