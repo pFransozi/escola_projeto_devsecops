@@ -1,8 +1,21 @@
-from flask import Blueprint, request, make_response
-from app.controllers.dashboard_controller import dashboard_data
+# Arquivo: sistema/backend/app/routes/dashboard_routes.py
+# NOVA VERSÃO - USANDO UM PADRÃO MAIS DIRETO E ROBUSTO
 
+from flask import Blueprint
+from app.controllers.dashboard_controller import dashboard_data
+from app.utils.decorators import role_required
+
+# Cria o Blueprint normalmente
 dashboard_bp = Blueprint("dashboard_db", __name__)
 
+# Usando a sintaxe de decorador padrão do Flask.
+# O nome do endpoint será gerado automaticamente pelo Flask a partir do nome da função ('get_dashboard').
 @dashboard_bp.route("", methods=["GET"])
+@role_required(roles=[])
 def get_dashboard():
+    """
+    Esta é a função de visualização (view function) para a rota do dashboard.
+    Ela é protegida pelo decorador e chama a lógica do controller.
+    """
+    # A lógica para buscar os dados continua no controller, o que é uma boa prática.
     return dashboard_data()

@@ -1,0 +1,6 @@
+# auth-service/requirements.txt
+Flask
+requests
+python-dotenv
+gunicorn
+PyJWT

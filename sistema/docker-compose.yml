@@ -17,6 +17,19 @@ services:
     networks:
       - db_net
 
+  auth-service:
+    build: ./auth-service
+    container_name: auth_service
+    restart: always
+    env_file:
+      - ./backend/.env
+    command: ["gunicorn", "--bind", "0.0.0.0:5001", "run:app"]
+    ports:
+      - "5001:5001"
+    networks:
+      - backend_net
+      - db_net
+
   backend:
     build: ./backend
     container_name: flask_backend
