@@ -2,21 +2,23 @@
   <v-container fluid>
     <v-toolbar flat>
       <v-toolbar-title>Cadastro de Professores</v-toolbar-title>
-      <v-spacer/>
+      <v-spacer />
       <v-btn color="primary" @click="openDialog()">Novo Professor</v-btn>
     </v-toolbar>
 
     <v-data-table
-      :headers="headers"
+      :columns="columns"
       :items="professores"
       :items-per-page="10"
       class="elevation-1"
       :loading="loading"
       loading-text="Carregando professores..."
     >
+      <!-- Exibe nome do usuário professor -->
       <template #item.nome_usuario="{ item }">
         {{ item.nome_usuario }}
       </template>
+      <!-- Ações de editar e deletar -->
       <template #item.actions="{ item }">
         <v-icon small class="mr-2" @click="openDialog(item)">mdi-pencil</v-icon>
         <v-icon small @click="confirmDelete(item)">mdi-delete</v-icon>
@@ -70,7 +72,7 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn text @click="closeDialog()">Cancelar</v-btn>
           <v-btn color="primary" @click="save()">Salvar</v-btn>
         </v-card-actions>
@@ -81,12 +83,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-// import axios from 'axios'
-import { useRouter } from 'vue-router'
 import { api } from '../utils/api'
 
-
-const router = useRouter()
 const dialog = ref(false)
 const loading = ref(false)
 const professores = ref([])
@@ -99,12 +97,15 @@ const editedItem = ref({
   descricao: ''
 })
 
-const headers = [
-  { text: 'ID', value: 'id' },
-  { text: 'Usuário', value: 'nome_usuario' },
-  { text: 'Salário', value: 'salario' },
-  { text: 'Graduação', value: 'graduacao' },
-  { text: 'Ações', value: 'actions', sortable: false }
+// =======================================
+// Cabeçalho da tabela
+// =======================================
+const columns = [
+  { text: 'ID',         value: 'id',           align: 'start', width: '80px' },
+  { text: 'Usuário',    value: 'nome_usuario', align: 'start'             },
+  { text: 'Salário',    value: 'salario',      align: 'end'               },
+  { text: 'Graduação',  value: 'graduacao',    align: 'start'             },
+  { text: 'Ações',      value: 'actions',      sortable: false, align: 'center' }
 ]
 
 async function fetchProfessores() {
@@ -112,20 +113,22 @@ async function fetchProfessores() {
   try {
     const res = await api.get('/api/professor')
     professores.value = res.data.data
+  } catch (err) {
+    console.error('Erro ao carregar professores:', err)
   } finally {
     loading.value = false
   }
 }
 
 async function fetchUsuariosProf() {
-  // todos os usuários do tipo "professor"
-  const res = await api.get('/api/usuario')
-  usuariosProf.value = res.data.data
-    .filter(u => u.tipo === 'professor')
-    .map(u => ({
-      label: `${u.nome} ${u.ultimo_nome}`,
-      value: u.id
-    }))
+  try {
+    const res = await api.get('/api/usuario')
+    usuariosProf.value = res.data.data
+      .filter(u => u.tipo === 'professor')
+      .map(u => ({ label: `${u.nome} ${u.ultimo_nome}`, value: u.id }))
+  } catch (err) {
+    console.error('Erro ao carregar usuários:', err)
+  }
 }
 
 function openDialog(item) {
@@ -160,8 +163,7 @@ async function save() {
 
 function confirmDelete(item) {
   if (confirm(`Deseja remover o professor ${item.nome_usuario}?`)) {
-    api
-      .delete(`/professor/${item.id}`)
+    api.delete(`/api/professor/${item.id}`)
       .then(fetchProfessores)
       .catch(err => alert(err.response?.data?.message || 'Erro ao deletar'))
   }

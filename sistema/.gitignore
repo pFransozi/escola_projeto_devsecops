@@ -1,0 +1,62 @@
+# ===============================
+# PYTHON
+# ===============================
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg-info/
+*.log
+*.sqlite3
+*.db
+__pycache__/
+venv/
+.venv/
+#.env
+
+# ===============================
+# FLASK / ALEMBIC
+# ===============================
+instance/
+sistema/backend/migrations/__pycache__/
+sistema/backend/app/**/__pycache__/
+sistema/backend/app/**/**/*.pyc
+
+# Ignora versões do Alembic (mas mantém arquivos de config)
+sistema/backend/migrations/versions/
+
+# ===============================
+# FRONTEND (React / Node)
+# ===============================
+sistema/frontend/node_modules/
+sistema/frontend/build/
+# sistema/frontend/.env
+sistema/frontend/.env.local
+sistema/frontend/.env.development.local
+sistema/frontend/.env.test.local
+sistema/frontend/.env.production.local
+
+# ===============================
+# DOCKER
+# ===============================
+**/.dockerignore
+
+# ===============================
+# IDEs / SISTEMA
+# ===============================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ===============================
+# LOGS / COVERAGE
+# ===============================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+coverage/
+*.cover
+*.lcov
+*.lcov.info

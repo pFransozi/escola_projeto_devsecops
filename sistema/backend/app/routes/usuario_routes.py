@@ -3,13 +3,11 @@ from flask import Blueprint
 from app.controllers.usuario_controller import (
     lista_usuarios, get_usuario, cadastrar_usuario, update_usuario, delete_usuario
 )
-# --- Imports atualizados ---
 from app.utils.decorators import role_required
 from app.models.usuario import UsuarioTipoEnum
 
 user_bp = Blueprint("user_bp", __name__)
 
-# --- Rotas corrigidas com decorador e endpoint ---
 user_bp.route('', methods=['GET'], endpoint='lista_usuarios')(
     role_required(roles=[UsuarioTipoEnum.Secretario])(lista_usuarios)
 )

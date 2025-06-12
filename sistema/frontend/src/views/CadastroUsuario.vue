@@ -6,7 +6,7 @@
       <v-btn color="primary" @click="openDialog()">Novo Usuário</v-btn>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="usuarios" :items-per-page="10" class="elevation-1" :loading="loading"
+    <v-data-table :columns="headers" :items="usuarios" :items-per-page="10" class="elevation-1" :loading="loading"
       loading-text="Carregando usuários...">
       <template #item.actions="{ item }">
         <v-icon small class="mr-2" @click="openDialog(item)">mdi-pencil</v-icon>

@@ -1,26 +1,52 @@
-// Arquivo: sistema/frontend/src/utils/api.js
-
 import axios from 'axios';
 
-// 1. A criação e exportação original da instância 'api' é mantida
 export const api = axios.create({
-  baseURL: '/',
+  baseURL: '/',            // ou '/api' se você tiver roteamento proxy configurado
   withCredentials: true
 });
 
-// 2. Adicionamos o interceptador diretamente na constante 'api' que já foi exportada
+// interceptor de request (já existente)
 api.interceptors.request.use(
   config => {
-    // Pega o token do localStorage a cada requisição
     const token = localStorage.getItem('token');
     if (token) {
-      // Se o token existir, anexa ao cabeçalho de autorização
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
+  error => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  response => response,
   error => {
-    // Apenas repassa o erro
+    const status = error.response?.status;
+    let msg;
+
+    if (status === 403) {
+      msg = 'Você não tem permissão para este recurso.';
+    } else if (status === 404) {
+      msg = 'Recurso não encontrado.';
+    } else if (status === 400) {
+      msg = error.response.data.message || 'Dados inválidos.';
+    } else if (status >= 500) {
+      msg = 'Erro interno do servidor.';
+    } else {
+      msg = error.response.data.message || 'Ocorreu um erro inesperado.';
+    }
+
+    window.dispatchEvent(new CustomEvent('http-error', { detail: msg }));
     return Promise.reject(error);
   }
 );
+
+api.interceptors.response.use(response => {
+  const method = response.config.method;
+  const successMsg = response.data.message;
+
+  // apenas criar, atualizar ou deletar
+  if (['post','put','delete'].includes(method) && successMsg) {
+    window.dispatchEvent(new CustomEvent('http-success', { detail: successMsg }));
+  }
+  return response;
+}, error => Promise.reject(error));

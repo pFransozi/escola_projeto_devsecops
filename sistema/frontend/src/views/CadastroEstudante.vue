@@ -7,16 +7,18 @@
     </v-toolbar>
 
     <v-data-table
-      :headers="headers"
+      :columns="columns"
       :items="estudantes"
       :items-per-page="10"
       class="elevation-1"
       :loading="loading"
       loading-text="Carregando estudantes..."
     >
+      <!-- Exibe nome do estudante -->
       <template #item.nome_estudante="{ item }">
         {{ item.nome_estudante }}
       </template>
+      <!-- Ações de editar e deletar -->
       <template #item.actions="{ item }">
         <v-icon small class="mr-2" @click="openDialog(item)">mdi-pencil</v-icon>
         <v-icon small @click="confirmDelete(item)">mdi-delete</v-icon>
@@ -40,7 +42,7 @@
                   :items="usuariosAluno"
                   item-title="label"
                   item-value="value"
-                  label="Aluno"
+                  label="Estudante"
                   required
                 />
               </v-col>
@@ -89,7 +91,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="closeDialog()">Cancelar</v-btn>
-          <v-btn color="primary" @click="save()">Salvar</v-btn>
+          <v-btn color="primary" @click="save">Salvar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -98,7 +100,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-// import axios from 'axios'
 import { api } from '../utils/api'
 
 const dialog = ref(false)
@@ -115,15 +116,18 @@ const editedItem = ref({
   comentarios: ''
 })
 
-const headers = [
-  { text: 'ID', value: 'id' },
-  { text: 'Estudante', value: 'nome_estudante' },
-  { text: 'Responsável 1', value: 'responsavel_1' },
-  { text: 'Fone Resp. 1', value: 'fone_resp_1' },
-  { text: 'Responsável 2', value: 'responsavel_2' },
-  { text: 'Fone Resp. 2', value: 'fone_resp_2' },
-  { text: 'Comentários', value: 'comentarios' },
-  { text: 'Ações', value: 'actions', sortable: false }
+// =======================================
+// Cabeçalho da tabela
+// =======================================
+const columns = [
+  { text: 'ID',             value: 'id',              align: 'start', width: '80px' },
+  { text: 'Estudante',      value: 'nome_estudante',  align: 'start'            },
+  { text: 'Responsável 1',  value: 'responsavel_1',   align: 'start'            },
+  { text: 'Fone Resp. 1',   value: 'fone_resp_1',     align: 'start'            },
+  { text: 'Responsável 2',  value: 'responsavel_2',   align: 'start'            },
+  { text: 'Fone Resp. 2',   value: 'fone_resp_2',     align: 'start'            },
+  { text: 'Comentários',    value: 'comentarios',     align: 'start'            },
+  { text: 'Ações',          value: 'actions', sortable: false, align: 'center' }
 ]
 
 async function fetchEstudantes() {
@@ -155,7 +159,14 @@ function openDialog(item) {
     editedItem.value = { ...item }
   } else {
     editedIndex.value = -1
-    editedItem.value = { id: null, responsavel_1: '', fone_resp_1: '', responsavel_2: '', fone_resp_2: '', comentarios: '' }
+    editedItem.value = {
+      id: null,
+      responsavel_1: '',
+      fone_resp_1: '',
+      responsavel_2: '',
+      fone_resp_2: '',
+      comentarios: ''
+    }
   }
   dialog.value = true
 }
@@ -168,9 +179,9 @@ async function save() {
   const payload = { ...editedItem.value }
   try {
     if (editedIndex.value > -1) {
-      await api.api(`/api/estudante/${payload.id}`, payload)
+      await api.put(`/api/estudante/${payload.id}`, payload)
     } else {
-      await api.api('/api/estudante', payload)
+      await api.post('/api/estudante', payload)
     }
     await fetchEstudantes()
     closeDialog()
@@ -181,8 +192,7 @@ async function save() {
 
 function confirmDelete(item) {
   if (confirm(`Deseja remover o estudante ${item.nome_estudante}?`)) {
-    api
-      .delete(`/estudante/${item.id}`)
+    api.delete(`/api/estudante/${item.id}`)
       .then(fetchEstudantes)
       .catch(err => alert(err.response?.data?.message || 'Erro ao deletar'))
   }
