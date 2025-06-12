@@ -31,6 +31,5 @@ with app.app_context():
     db.create_all()
 EOF
 
-echo "Iniciando servidor Flask..."
-# exec flask run --host=0.0.0.0 --port=5000
-exec python -m app.main
+echo "Iniciando servidor Flask com HTTPS..."
+exec gunicorn --certfile /cert.pem --keyfile /key.pem --bind 0.0.0.0:5000 app.main:app

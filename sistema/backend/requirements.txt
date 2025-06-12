@@ -12,3 +12,4 @@ cryptography>=41.0.0
 pytest
 Faker
 Werkzeug<3.0
+gunicorn
