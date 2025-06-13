@@ -10,8 +10,6 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
       MYSQL_ROOT_PASSWORD: rootpass
-      # ports:
-      #   - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -27,8 +25,10 @@ services:
     ports:
       - "5001:5001"
     networks:
-      - backend_net
       - db_net
+      - backend_net
+    depends_on:
+      - db
 
   backend:
     build: ./backend
@@ -37,17 +37,35 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - PYTHONPATH=/app
-    depends_on:
-      - db
+      PYTHONPATH: /app
+    volumes:
+      - ./backend:/app
+      - ./backend/migrations:/app/migrations
     ports:
       - "5000:5000"
     networks:
       - db_net
       - backend_net
-    volumes:
-      - ./backend:/app
-      - ./backend/migrations:/app/migrations
+    depends_on:
+      - db
+
+  gateway:
+    build: ./api-gateway          # shorthand: contexto de build é essa pasta
+    container_name: api_gateway
+    restart: always
+    ports:
+      - "5002:5002"
+    environment:
+      AUTH_SERVICE_URL: "http://auth-service:5001"
+      BACKEND_SERVICE_URL: "https://backend:5000"
+      SSL_CERT_PATH: "/app/certs/cert.pem"
+      SSL_KEY_PATH: "/app/certs/key.pem"
+    networks:
+      - backend_net
+      - frontend_net
+    depends_on:
+      - auth-service
+      - backend
 
   frontend:
     build: ./frontend
@@ -55,14 +73,15 @@ services:
     restart: always
     env_file:
       - ./frontend/.env
-    depends_on:
-      - backend
     ports:
       - "3000:80"
       - "3443:443"
     networks:
-      - backend_net
       - frontend_net
+      - backend_net
+    depends_on:
+      - gateway
+      - backend
 
 volumes:
   mysql_data:
