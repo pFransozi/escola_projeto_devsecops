@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <v-data-table
-      :columns="headers"
+      :headers="headers"
       :items="noticias"
       :items-per-page="10"
       class="elevation-1"
@@ -63,19 +63,13 @@ const dialog = ref(false)
 const loading = ref(false)
 const noticias = ref([])
 const editedIndex = ref(-1)
-const editedItem = ref({
-  id: null,
-  descricao: '',
-  conteudo: ''
-})
+const editedItem = ref({ id: null, descricao: '', conteudo: '' })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
+// Cabeçalhos no padrão Vuetify 3 Labs
 const headers = [
-  { text: 'ID',        value: 'id',       align: 'start', width: '80px' },
-  { text: 'Título',    value: 'descricao', align: 'start'           },
-  { text: 'Ações',     value: 'actions',  sortable: false, align: 'center' }
+  { title: 'ID',     key: 'id',       align: 'start', width: '80px' },
+  { title: 'Título', key: 'descricao', align: 'start'           },
+  { title: 'Ações',  key: 'actions',  sortable: false, align: 'center' }
 ]
 
 function fetchNoticias() {
@@ -109,12 +103,10 @@ function closeDialog() {
 
 function save() {
   const payload = { ...editedItem.value }
-  let request
-  if (editedIndex.value > -1) {
-    request = api.put(`/api/noticia/${payload.id}`, payload)
-  } else {
-    request = api.post('/api/noticia', payload)
-  }
+  const request = editedIndex.value > -1
+    ? api.put(`/api/noticia/${payload.id}`, payload)
+    : api.post('/api/noticia', payload)
+
   request
     .then(() => {
       fetchNoticias()

@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <v-data-table
-      :columns="columns"
+      :headers="headers"
       :items="disciplinas"
       :items-per-page="10"
       class="elevation-1"
@@ -63,20 +63,14 @@ const dialog = ref(false)
 const loading = ref(false)
 const disciplinas = ref([])
 const editedIndex = ref(-1)
-const editedItem = ref({
-  id: null,
-  descricao: '',
-  ementa: ''
-})
+const editedItem = ref({ id: null, descricao: '', ementa: '' })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
-const columns = [
-  { text: 'ID',         value: 'id',       align: 'start', width: '80px' },
-  { text: 'Descrição',  value: 'descricao', align: 'start'             },
-  { text: 'Ementa',     value: 'ementa',    align: 'start'             },
-  { text: 'Ações',      value: 'actions',   sortable: false, align: 'center' }
+// Cabeçalhos no padrão Vuetify 3 Labs
+const headers = [
+  { title: 'ID',         key: 'id',        align: 'start', width: '80px' },
+  { title: 'Descrição',  key: 'descricao', align: 'start'             },
+  { title: 'Ementa',     key: 'ementa',    align: 'start'             },
+  { title: 'Ações',      key: 'actions',   sortable: false, align: 'center' }
 ]
 
 function fetchDisciplinas() {
@@ -110,12 +104,10 @@ function closeDialog() {
 
 function save() {
   const payload = { ...editedItem.value }
-  let request
-  if (editedIndex.value > -1) {
-    request = api.put(`/api/disciplina/${payload.id}`, payload)
-  } else {
-    request = api.post('/api/disciplina', payload)
-  }
+  const request = editedIndex.value > -1
+    ? api.put(`/api/disciplina/${payload.id}`, payload)
+    : api.post('/api/disciplina', payload)
+
   request
     .then(() => {
       fetchDisciplinas()

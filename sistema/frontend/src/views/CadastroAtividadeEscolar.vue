@@ -6,8 +6,14 @@
       <v-btn color="primary" @click="openDialog()">Nova Atividade Escolar</v-btn>
     </v-toolbar>
 
-    <v-data-table :columns="headers" :items="atividadesEscolares" :items-per-page="10" class="elevation-1"
-      :loading="loading" loading-text="Carregando atividades...">
+    <v-data-table
+      :headers="headers"
+      :items="atividadesEscolares"
+      :items-per-page="10"
+      class="elevation-1"
+      :loading="loading"
+      loading-text="Carregando atividades..."
+    >
       <!-- Exibe descrição da turma vinculada -->
       <template #item.turma_descricao="{ item }">
         {{ item.turma_descricao }}
@@ -30,9 +36,19 @@
         </v-card-title>
         <v-card-text>
           <v-form ref="form">
-            <v-text-field v-model="editedItem.descricao" label="Descrição da Atividade" required />
-            <v-select v-model="editedItem.turma_id" :items="turmasOptions" item-title="label" item-value="value"
-              label="Turma" required />
+            <v-text-field
+              v-model="editedItem.descricao"
+              label="Descrição da Atividade"
+              required
+            />
+            <v-select
+              v-model="editedItem.turma_id"
+              :items="turmasOptions"
+              item-title="label"
+              item-value="value"
+              label="Turma"
+              required
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -54,17 +70,14 @@ const loading = ref(false)
 const atividadesEscolares = ref([])
 const turmasOptions = ref([])
 const editedIndex = ref(-1)
-const editedItem = ref({
-  id: null,
-  descricao: '',
-  turma_id: null
-})
+const editedItem = ref({ id: null, descricao: '', turma_id: null })
 
+// Cabeçalhos no padrão Vuetify 3 Labs
 const headers = [
-  { text: 'ID', value: 'id', align: 'start', width: '80px' },
-  { text: 'Descrição', value: 'descricao', align: 'start' },
-  { text: 'Turma', value: 'turma_descricao', align: 'start' },
-  { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
+  { title: 'ID', key: 'id', align: 'start', width: '80px' },
+  { title: 'Descrição', key: 'descricao', align: 'start' },
+  { title: 'Turma', key: 'turma_descricao', align: 'start' },
+  { title: 'Ações', key: 'actions', sortable: false, align: 'center' }
 ]
 
 async function fetchTurmas() {

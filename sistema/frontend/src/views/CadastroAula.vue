@@ -6,8 +6,14 @@
       <v-btn color="primary" @click="openDialog()">Nova Aula</v-btn>
     </v-toolbar>
 
-    <v-data-table :columns="headers" :items="aulas" :items-per-page="10" class="elevation-1" :loading="loading"
-      loading-text="Carregando aulas...">
+    <v-data-table
+      :headers="headers"
+      :items="aulas"
+      :items-per-page="10"
+      class="elevation-1"
+      :loading="loading"
+      loading-text="Carregando aulas..."
+    >
       <!-- Exibe nome do professor -->
       <template #item.nome_professor="{ item }">
         {{ item.nome_professor }}
@@ -33,11 +39,27 @@
         </v-card-title>
         <v-card-text>
           <v-form ref="form">
-            <v-text-field v-model="editedItem.descricao" label="Descrição da Aula" required />
-            <v-select v-model="editedItem.professor_id" :items="professoresOptions" item-title="label"
-              item-value="value" label="Professor" required />
-            <v-select v-model="editedItem.turma_id" :items="turmasOptions" item-title="label" item-value="value"
-              label="Turma" required />
+            <v-text-field
+              v-model="editedItem.descricao"
+              label="Descrição da Aula"
+              required
+            />
+            <v-select
+              v-model="editedItem.professor_id"
+              :items="professoresOptions"
+              item-title="label"
+              item-value="value"
+              label="Professor"
+              required
+            />
+            <v-select
+              v-model="editedItem.turma_id"
+              :items="turmasOptions"
+              item-title="label"
+              item-value="value"
+              label="Turma"
+              required
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -60,31 +82,21 @@ const aulas = ref([])
 const professoresOptions = ref([])
 const turmasOptions = ref([])
 const editedIndex = ref(-1)
-const editedItem = ref({
-  id: null,
-  descricao: '',
-  professor_id: null,
-  turma_id: null
-})
+const editedItem = ref({ id: null, descricao: '', professor_id: null, turma_id: null })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
+// Cabeçalhos no padrão Vuetify 3 (Labs)
 const headers = [
-  { text: 'ID', value: 'id', align: 'start', width: '80px' },
-  { text: 'Descrição', value: 'descricao', align: 'start' },
-  { text: 'Professor', value: 'nome_professor', align: 'start' },
-  { text: 'Turma', value: 'turma_descricao', align: 'start' },
-  { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
+  { title: 'ID',         key: 'id',              align: 'start', width: '80px' },
+  { title: 'Descrição',  key: 'descricao',       align: 'start' },
+  { title: 'Professor',   key: 'nome_professor',  align: 'start' },
+  { title: 'Turma',      key: 'turma_descricao', align: 'start' },
+  { title: 'Ações',      key: 'actions',         sortable: false, align: 'center' }
 ]
 
 async function fetchProfessoresOptions() {
   try {
     const res = await api.get('/api/professor')
-    professoresOptions.value = res.data.data.map(p => ({
-      label: p.nome_usuario,
-      value: p.id
-    }))
+    professoresOptions.value = res.data.data.map(p => ({ label: p.nome_usuario, value: p.id }))
   } catch (err) {
     console.error('Erro ao carregar professores:', err)
   }
@@ -93,10 +105,7 @@ async function fetchProfessoresOptions() {
 async function fetchTurmasOptions() {
   try {
     const res = await api.get('/api/turma')
-    turmasOptions.value = res.data.data.map(t => ({
-      label: `${t.descricao} (${t.sala})`,
-      value: t.id
-    }))
+    turmasOptions.value = res.data.data.map(t => ({ label: `${t.descricao} (${t.sala})`, value: t.id }))
   } catch (err) {
     console.error('Erro ao carregar turmas:', err)
   }

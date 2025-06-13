@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <v-data-table
-      :columns="columns"
+      :headers="headers"
       :items="provas"
       :items-per-page="10"
       class="elevation-1"
@@ -95,17 +95,15 @@ const aulasOptions = ref([])
 const editedIndex = ref(-1)
 const editedItem = ref({ id: null, descricao: '', data: '', professor_id: null, aula_id: null })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
-const columns = [
-  { text: 'ID',           value: 'id',            align: 'start', width: '80px' },
-  { text: 'Descrição',    value: 'descricao',     align: 'start'             },
-  { text: 'Data',         value: 'data',          align: 'center'            },
-  { text: 'Professor',    value: 'nome_professor', align: 'start'             },
-  { text: 'Aula',         value: 'aula_descricao', align: 'start'             },
-  { text: 'Turma',        value: 'turma_descricao',align: 'start'             },
-  { text: 'Ações',        value: 'actions',       sortable: false, align: 'center' }
+// Cabeçalhos no padrão Vuetify 3 Labs
+const headers = [
+  { title: 'ID',             key: 'id',               align: 'start', width: '80px' },
+  { title: 'Descrição',      key: 'descricao',        align: 'start'               },
+  { title: 'Data',           key: 'data',             align: 'center'              },
+  { title: 'Professor',      key: 'nome_professor',   align: 'start'               },
+  { title: 'Aula',           key: 'aula_descricao',   align: 'start'               },
+  { title: 'Turma',          key: 'turma_descricao',  align: 'start'               },
+  { title: 'Ações',          key: 'actions',          sortable: false, align: 'center' }
 ]
 
 function formatDate(value) {
@@ -177,7 +175,7 @@ async function save() {
     } else {
       await api.post('/api/prova', payload)
     }
-    fetchProvas()
+    await fetchProvas()
     closeDialog()
     window.dispatchEvent(new CustomEvent('http-success', { detail: 'Prova salva com sucesso!' }))
   } catch {

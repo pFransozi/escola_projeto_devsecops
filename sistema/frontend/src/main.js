@@ -1,31 +1,14 @@
 /**
  * Ponto de entrada da aplicação Vue.
- * Configura o axios, Vuetify e inicializa o app com router.
+ * Configura o axios, Vuetify (incluindo Labs) e inicializa o app com router.
  */
-
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index'
-import { createVuetify } from 'vuetify'
-import 'vuetify/styles'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
 
-/**
- * Define a URL base para todas as requisições axios.
- * A variável VITE_API_URL deve estar definida em .env.
- */
+// Axios: define baseURL e interceptor de autenticação
 axios.defaults.baseURL = import.meta.env.VITE_API_URL
-
-/**
- * Interceptor de requisições axios:
- * adiciona header Authorization com o token armazenado.
- * @param {import('axios').AxiosRequestConfig} config 
- * @returns {import('axios').AxiosRequestConfig}
- */
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -34,14 +17,30 @@ axios.interceptors.request.use(config => {
   return config
 })
 
+// Vuetify
+import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+
+// Labs (para usar VDataTable e outros componentes alfa)
+import * as labsComponents from 'vuetify/labs/components'
+
 const vuetify = createVuetify({
-  components,
+  components: {
+    // componentes estáveis
+    ...components,
+    // componentes Labs (inclui VDataTable)
+    ...labsComponents,
+  },
   directives,
   icons: {
     defaultSet: 'mdi',
     aliases,
-    sets: { mdi }
-  }
+    sets: { mdi },
+  },
 })
 
 createApp(App)

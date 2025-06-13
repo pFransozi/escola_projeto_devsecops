@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <v-data-table
-      :columns="columns"
+      :headers="headers"
       :items="estudantes"
       :items-per-page="10"
       class="elevation-1"
@@ -116,18 +116,16 @@ const editedItem = ref({
   comentarios: ''
 })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
-const columns = [
-  { text: 'ID',             value: 'id',              align: 'start', width: '80px' },
-  { text: 'Estudante',      value: 'nome_estudante',  align: 'start'            },
-  { text: 'Responsável 1',  value: 'responsavel_1',   align: 'start'            },
-  { text: 'Fone Resp. 1',   value: 'fone_resp_1',     align: 'start'            },
-  { text: 'Responsável 2',  value: 'responsavel_2',   align: 'start'            },
-  { text: 'Fone Resp. 2',   value: 'fone_resp_2',     align: 'start'            },
-  { text: 'Comentários',    value: 'comentarios',     align: 'start'            },
-  { text: 'Ações',          value: 'actions', sortable: false, align: 'center' }
+// Cabeçalhos no padrão Vuetify 3 (Labs)
+const headers = [
+  { title: 'ID',               key: 'id',              align: 'start', width: '80px' },
+  { title: 'Estudante',        key: 'nome_estudante',  align: 'start'            },
+  { title: 'Responsável 1',    key: 'responsavel_1',   align: 'start'            },
+  { title: 'Fone Resp. 1',     key: 'fone_resp_1',     align: 'start'            },
+  { title: 'Responsável 2',    key: 'responsavel_2',   align: 'start'            },
+  { title: 'Fone Resp. 2',     key: 'fone_resp_2',     align: 'start'            },
+  { title: 'Comentários',      key: 'comentarios',     align: 'start'            },
+  { title: 'Ações',            key: 'actions',         sortable: false, align: 'center' }
 ]
 
 async function fetchEstudantes() {

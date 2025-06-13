@@ -6,8 +6,14 @@
       <v-btn color="primary" @click="openDialog">Nova Atividade</v-btn>
     </v-toolbar>
 
-    <v-data-table :columns="columns" :items="atividades" :items-per-page="10" class="elevation-1" :loading="loading"
-      loading-text="Carregando atividades...">
+    <v-data-table
+      :headers="headers"
+      :items="atividades"
+      :items-per-page="10"
+      class="elevation-1"
+      :loading="loading"
+      loading-text="Carregando atividades..."
+    >
       <!-- Formatação customizada da coluna 'Data' -->
       <template #item.data="{ item }">
         {{ formatDate(item.data) }}
@@ -67,13 +73,13 @@ const atividades = ref([])
 const editedIndex = ref(-1)
 const editedItem = ref({ id: null, descricao: '', custo: null, data: '' })
 
-// Vuetify 3 usa `columns` em vez de `headers`
-const columns = [
-  { title: 'ID', key: 'id', fixed: 'start', width: '80px' },
+// Vuetify 3 Labs espera prop 'headers' com { title, key }
+const headers = [
+  { title: 'ID',        key: 'id',        width: '80px', fixed: 'start' },
   { title: 'Descrição', key: 'descricao' },
-  { title: 'Custo', key: 'custo' },
-  { title: 'Data', key: 'data' },
-  { title: 'Ações', key: 'actions', sortable: false }
+  { title: 'Custo',     key: 'custo'     },
+  { title: 'Data',      key: 'data'      },
+  { title: 'Ações',     key: 'actions',  sortable: false }
 ]
 
 function formatDate(value) {
@@ -96,9 +102,7 @@ async function fetchAtividades() {
     const res = await api.get('/api/atividade')
     atividades.value = res.data.data
   } catch {
-    window.dispatchEvent(
-      new CustomEvent('http-error', { detail: 'Erro ao carregar atividades.' })
-    )
+    window.dispatchEvent(new CustomEvent('http-error', { detail: 'Erro ao carregar atividades.' }))
   } finally {
     loading.value = false
   }

@@ -3,7 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import fs from 'fs'
 import path from 'path'
 
-
 export default defineConfig({
   plugins: [vue()],
   server: {

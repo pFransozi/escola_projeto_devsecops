@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <v-data-table
-      :columns="columns"
+      :headers="headers"
       :items="professores"
       :items-per-page="10"
       class="elevation-1"
@@ -97,15 +97,13 @@ const editedItem = ref({
   descricao: ''
 })
 
-// =======================================
-// Cabeçalho da tabela
-// =======================================
-const columns = [
-  { text: 'ID',         value: 'id',           align: 'start', width: '80px' },
-  { text: 'Usuário',    value: 'nome_usuario', align: 'start'             },
-  { text: 'Salário',    value: 'salario',      align: 'end'               },
-  { text: 'Graduação',  value: 'graduacao',    align: 'start'             },
-  { text: 'Ações',      value: 'actions',      sortable: false, align: 'center' }
+// Cabeçalhos no padrão Vuetify 3 (Labs)
+const headers = [
+  { title: 'ID',        key: 'id',           align: 'start', width: '80px' },
+  { title: 'Usuário',   key: 'nome_usuario', align: 'start'              },
+  { title: 'Salário',   key: 'salario',      align: 'end'                },
+  { title: 'Graduação', key: 'graduacao',    align: 'start'              },
+  { title: 'Ações',     key: 'actions',      sortable: false, align: 'center' }
 ]
 
 async function fetchProfessores() {
