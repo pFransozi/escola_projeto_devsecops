@@ -1,4 +1,3 @@
-# Arquivo: sistema/backend/app/routes/estudante_routes.py
 from flask import Blueprint
 from app.controllers.estudante_controller import (
     get_estudante, create_estudante, update_estudante, delete_estudante, lista_estudantes

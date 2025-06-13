@@ -5,6 +5,9 @@ from app.models.professor import Professor
 from app.models.turma import Turma
 
 class Aula(db.Model):
+
+    """Modelo que representa uma Aula, contendo descrição, professor e turma associados."""
+
     __tablename__ = "aula"
 
     id = db.Column(db.Integer, primary_key=True)

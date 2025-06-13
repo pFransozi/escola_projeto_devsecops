@@ -4,6 +4,9 @@ from app.utils.encrypt_db import EncryptedField
 
 
 class Disciplina(db.Model):
+
+    """Modelo que representa uma Disciplina (matéria) com ementa e descrição."""
+
     __tablename__ = "disciplina"
 
     id = db.Column(db.Integer, primary_key=True)

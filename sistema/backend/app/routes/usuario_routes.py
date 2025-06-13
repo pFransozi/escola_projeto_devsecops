@@ -1,4 +1,3 @@
-# Arquivo: sistema/backend/app/routes/usuario_routes.py
 from flask import Blueprint
 from app.controllers.usuario_controller import (
     lista_usuarios, get_usuario, cadastrar_usuario, update_usuario, delete_usuario

@@ -1,12 +1,9 @@
-# Arquivo: sistema/backend/app/utils/decorators.py
-# VERSÃO FINAL E CORRIGIDA
-
 from functools import wraps
 from flask import g, jsonify
 from app.models.usuario import UsuarioTipoEnum
 
 def admin_required(fn):
-    """Verifica se o usuário é um administrador logado via Cognito."""
+    """Decorador que garante acesso apenas a administradores autenticados via Cognito."""
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if not g.get('cognito_claims'):
@@ -20,8 +17,9 @@ def admin_required(fn):
 
 def role_required(roles=[]):
     """
-    Verifica se o usuário logado (local ou Cognito) possui um dos papéis necessários.
-    `roles` é uma lista de membros do UsuarioTipoEnum.
+    Decorador que garante acesso apenas a usuários com um dos papéis especificados.
+    Parâmetros:
+        roles (list): Lista de membros de UsuarioTipoEnum permitidos para acessar a rota.
     """
     def decorator(fn):
         @wraps(fn)

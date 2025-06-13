@@ -6,6 +6,8 @@ from app.models.usuario import Usuario
 from app.utils.response import APIResponse
 
 def get_professor(id):
+    """Obtém os dados de um professor específico pelo ID."""
+
     
     try:
     
@@ -20,6 +22,12 @@ def get_professor(id):
                                  ,status_code=500)
 
 def create_professor():
+    """
+    Registra um novo professor a partir de um usuário existente.
+    Espera dados JSON incluindo o ID do usuário e informações do professor.
+    Retorna:
+        201 em caso de sucesso ou erros 400/500 conforme a validação.
+    """
     
     data = request.json
     user_id = data.get("id")

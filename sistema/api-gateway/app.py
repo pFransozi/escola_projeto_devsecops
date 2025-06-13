@@ -40,10 +40,17 @@ app.logger.setLevel(logging.INFO)
 
 @app.before_request
 def start_timer():
+    """Inicia um temporizador no objeto request para medir a duração da requisição atual."""
+
     request.start_time = time.time()
 
 @app.after_request
 def log_request(response):
+    """
+    Registra detalhes da requisição após a resposta ser gerada.
+    Calcula a duração da requisição, identifica o serviço de destino (auth ou backend),
+    e loga informações como método HTTP, caminho, status e tempo de processamento em ms.
+    """
     duration = time.time() - request.start_time
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     dest = 'auth' if request.path.startswith('/api/auth/') else 'backend'
@@ -62,6 +69,13 @@ def log_request(response):
 
 @app.route('/api/<path:subpath>', methods=['GET','POST','PUT','PATCH','DELETE'])
 def gateway(subpath):
+    """
+    Rota principal do API Gateway.
+    Redireciona a requisição recebida para o serviço apropriado (auth-service ou backend) com base no caminho.
+    Encaminha método, headers, parâmetros de query, corpo e cookies para o serviço de destino.
+    Retorna:
+        A resposta HTTP recebida do serviço de destino, incluindo corpo, status e cabeçalhos relevantes.
+    """
     # Escolhe o serviço alvo
     if subpath.startswith('auth/'):
         url = f"{AUTH_SERVICE_URL}/api/{subpath}"

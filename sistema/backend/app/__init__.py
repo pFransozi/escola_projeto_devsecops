@@ -27,9 +27,6 @@ def create_app(config_name='development'):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # with app.app_context():
-    #     import app.models
-
     from app.middleware.auth import autenticacao
 
     app.before_request(autenticacao)

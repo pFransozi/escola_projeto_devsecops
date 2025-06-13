@@ -5,6 +5,8 @@ from app.models.professor import Professor
 from app.models.aula import Aula
 
 class Prova(db.Model):
+    """Modelo que representa uma Prova (avaliação) aplicada em uma aula por um professor."""
+
     __tablename__ = "prova"
 
     id = db.Column(db.Integer, primary_key=True)

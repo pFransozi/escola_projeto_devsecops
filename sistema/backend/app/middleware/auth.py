@@ -1,6 +1,3 @@
-# Arquivo: sistema/backend/app/middleware/auth.py
-# VERSÃO COMPLETA E CORRIGIDA para resolver o problema de bloqueio da rota interna
-
 import os
 import jwt
 from jwt import PyJWKClient
@@ -10,7 +7,10 @@ from app.utils.jwt import JWT_SECRET_KEY, jwk_client, COGNITO_CLIENT_ID, COGNITO
 
 def autenticacao():
     """
-    Este middleware intercepta todas as requisições para o backend.
+    Middleware de autenticação que intercepta todas as requisições ao backend.
+    Verifica se a rota solicitada requer token de autorização e, caso positivo,
+    valida o token JWT (Cognito ou local) presente no cabeçalho Authorization.
+    Retorna uma resposta de erro JSON e código HTTP 401/403 se a autenticação falhar.
     """
     # Permite requisições pré-voo de CORS
     if request.method == "OPTIONS":

@@ -4,6 +4,8 @@ from app.utils.encrypt_db import EncryptedField
 
 
 class Turma(db.Model):
+    """Modelo que representa uma Turma (por exemplo, uma sala ou grupo de alunos)."""
+
     __tablename__ = "turma"
 
     id = db.Column(db.Integer, primary_key=True)

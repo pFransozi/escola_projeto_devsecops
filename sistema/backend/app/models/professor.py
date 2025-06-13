@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 
 
 class Professor(db.Model):
+    """Modelo que representa um Professor, estendendo os dados de um usuário."""
+
 
     __tablename__ = "professor"
 

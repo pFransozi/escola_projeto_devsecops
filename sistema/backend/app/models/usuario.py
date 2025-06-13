@@ -7,6 +7,8 @@ from sqlalchemy import Enum as SAEnum
 
 
 class UsuarioTipoEnum(str, Enum):
+    """Enumeração dos tipos de usuário no sistema."""
+
     Secretario = "secretario"
     Professor = "professor"
     Aluno = "aluno"
@@ -43,6 +45,13 @@ class Usuario(db.Model):
         return f"<Usuário {self.usuario}>"
 
     def check_password(self, plain):
+        """
+        Verifica se a senha fornecida corresponde à senha armazenada.
+        Parâmetros:
+            plain (str): Senha em texto plano para verificação.
+        Retorna:
+            bool: True se a senha estiver correta, False caso contrário.
+        """
         return check_password_hash(self.senha, plain)
 
     def to_dict(self):

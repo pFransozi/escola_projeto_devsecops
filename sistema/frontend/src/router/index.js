@@ -1,3 +1,8 @@
+/**
+ * Define as rotas principais da aplicação.
+ * Rotas protegidas devem verificar autenticação no beforeEach.
+ */
+
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Dashboard from '../views/Dashboard.vue'
@@ -97,12 +102,20 @@ const routes = [
   { path: '/:catchAll(.*)', redirect: '/login' }
 ]
 
+/**
+ * Cria e configura o Vue Router.
+ * @returns {import('vue-router').Router}
+ */
+
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-// Redirecionamentos de acordo com autenticação
+/**
+ * Guarda de rota global:
+ * redireciona para /login se rota requer autenticação e não há token.
+ */
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const precisaAuth = to.matched.some(r => r.meta.requiresAuth)

@@ -1,8 +1,7 @@
-# Arquivo: sistema/backend/app/config.py
 import os
 
 class Config:
-    """Configuração base."""
+    """Configuração base da aplicação."""
     SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "uma-chave-secreta-padrao")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
@@ -10,15 +9,15 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "uma-chave-jwt-secreta-padrao-para-testes")
 
 class DevelopmentConfig(Config):
-    """Configuração de desenvolvimento."""
+    """Configuração específica para ambiente de desenvolvimento."""
+
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "mysql://myuser:mypassword@mysql_db/myappdb"
 
 class TestingConfig(Config):
-    """Configuração de teste."""
+    """Configuração específica para ambiente de testes (testes unitários)."""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-    # A JWT_SECRET_KEY é herdada da classe Config base. Nenhuma alteração extra é necessária aqui.
 
 
 # Dicionário para facilitar a seleção da configuração

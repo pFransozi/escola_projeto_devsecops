@@ -1,4 +1,3 @@
-# Arquivo: sistema/backend/app/routes/api_bp.py
 from flask import Blueprint
 
 api_bp = Blueprint("api_bp", __name__, url_prefix="/api")
@@ -6,7 +5,6 @@ api_bp = Blueprint("api_bp", __name__, url_prefix="/api")
 # Sub-blueprints
 from app.routes.usuario_routes import user_bp
 
-# from app.routes.auth_routes import auth_bp  # <--- REMOVA ESTA LINHA
 from app.routes.dashboard_routes import dashboard_bp
 from app.routes.professor_routes import professor_bp
 from app.routes.estudante_routes import estudante_bp

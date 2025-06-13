@@ -5,6 +5,9 @@ from app.utils.encrypt_db import EncryptedField
 
 
 class Estudante(db.Model):
+
+    """Modelo que representa um Estudante, com informações adicionais ligadas a um usuário."""
+
     
     __tablename__ = "estudante"
 

@@ -5,6 +5,8 @@ load_dotenv()
 
 
 class Config:
+    """Configurações do serviço de autenticação (Auth Service), incluindo integração com AWS Cognito."""
+
     COGNITO_DOMAIN = os.getenv("AWS_COGNITO_DOMAIN")
     COGNITO_REGION = os.getenv("AWS_COGNITO_REGION")
     COGNITO_CLIENT_ID = os.getenv("AWS_COGNITO_CLIENT_ID")
@@ -19,6 +21,8 @@ class Config:
 
     @staticmethod
     def validate():
+        """Verifica se todas as variáveis de ambiente necessárias estão definidas, senão lança erro."""
+
         if not all(
             [
                 Config.COGNITO_DOMAIN,

@@ -1,15 +1,12 @@
-# Arquivo: sistema/backend/app/routes/professor_routes.py
 from flask import Blueprint
 from app.controllers.professor_controller import (
     get_professor, create_professor, update_professor, delete_professor, lista_professores
 )
-# --- Imports atualizados ---
 from app.utils.decorators import role_required
 from app.models.usuario import UsuarioTipoEnum
 
 professor_bp = Blueprint("professor_bp", __name__)
 
-# --- Rotas corrigidas com decorador e endpoint ---
 professor_bp.route('', methods=['GET', 'OPTIONS'], endpoint='lista_professores')(
     role_required(roles=[UsuarioTipoEnum.Secretario])(lista_professores)
 )

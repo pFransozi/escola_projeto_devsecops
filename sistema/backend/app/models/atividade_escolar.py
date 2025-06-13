@@ -5,6 +5,8 @@ from app.models.turma import Turma
 
 
 class AtividadeEscolar(db.Model):
+    """Modelo que representa uma Atividade Escolar vinculada a uma Turma específica."""
+
     __tablename__ = "atividade_escolar"
 
     id = db.Column(db.Integer, primary_key=True)

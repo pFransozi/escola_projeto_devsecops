@@ -1,16 +1,13 @@
-# Arquivo: sistema/backend/app/utils/jwt.py
-# VERSÃO SIMPLIFICADA - RESPONSÁVEL APENAS PELA CONFIGURAÇÃO DA VALIDAÇÃO
-
 import os
 import jwt
 from jwt import PyJWKClient
 
-# --- Chave para validar tokens locais (HS256) ---
+# Chave para validar tokens locais (HS256)
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 if not JWT_SECRET_KEY:
     raise RuntimeError("JWT_SECRET_KEY não configurada no .env")
 
-# --- Configurações para validar tokens do Cognito (JWKS) ---
+# Configurações para validar tokens do Cognito (JWKS)
 COGNITO_REGION = os.getenv("AWS_COGNITO_REGION", "us-east-2")
 COGNITO_USER_POOL_ID = os.getenv("AWS_COGNITO_USER_POOL_ID")
 COGNITO_CLIENT_ID = os.getenv("AWS_COGNITO_CLIENT_ID")
@@ -25,5 +22,3 @@ JWKS_URL = (
 )
 # Cliente para buscar as chaves públicas do Cognito, que será usado pelo middleware
 jwk_client = PyJWKClient(JWKS_URL)
-
-# As funções de criação de token foram removidas pois agora são responsabilidade do auth-service.

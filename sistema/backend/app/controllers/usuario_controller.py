@@ -7,6 +7,9 @@ from app.utils.response import APIResponse
 from datetime import datetime
 
 def lista_usuarios():
+
+    """Recupera a lista de todos os usuários cadastrados no sistema."""
+
     try:
         usuarios = Usuario.query.all()
         data = [usuario.to_dict() for usuario in usuarios]
@@ -18,6 +21,13 @@ def lista_usuarios():
         )
     
 def get_usuario(id):
+    """
+    Busca um usuário pelo ID fornecido.
+    Parâmetros:
+        id (int): O identificador único do usuário.
+    Retorna:
+        Resposta API JSON contendo os dados do usuário se encontrado, ou mensagem de erro 404.
+    """
     try:
         usuario = Usuario.query.get(id)
         if not usuario:
@@ -34,6 +44,12 @@ def get_usuario(id):
         )
 
 def cadastrar_usuario():
+    """
+    Cadastra um novo usuário com base nos dados JSON fornecidos na requisição.
+    Valida campos obrigatórios e unicidade do nome de usuário.
+    Retorna:
+        Resposta de sucesso 201 se criado ou mensagens de erro adequadas (400/500).
+    """
 
     data = request.get_json()
     required = [
@@ -94,6 +110,13 @@ def cadastrar_usuario():
     
 
 def update_usuario(id):
+    """
+    Atualiza os dados de um usuário existente pelo ID.
+    Parâmetros:
+        id (int): Identificador do usuário a ser atualizado.
+    Retorna:
+        Resposta de sucesso com mensagem se a atualização ocorrer, ou erros 404/400/500 se falhar.
+    """
     data = request.get_json()
 
     try:
@@ -138,6 +161,13 @@ def update_usuario(id):
 
 
 def delete_usuario(id):
+    """
+    Remove um usuário existente pelo ID.
+    Parâmetros:
+        id (int): Identificador do usuário a ser removido.
+    Retorna:
+        Resposta de sucesso com mensagem 200 se removido, ou erro 404/500 se falhar.
+    """
     try:
         user = Usuario.query.get(id)
         if not user:

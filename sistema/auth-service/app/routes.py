@@ -6,6 +6,12 @@ auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route("/callback", methods=['POST'])
 def handle_callback():
+    """
+    Lida com o callback do OAuth Cognito.
+    Recebe um código de autorização via requisição POST e troca por tokens de acesso.
+    Retorna:
+        JSON com tokens (access/refresh/id) em caso de sucesso, ou erro 500 em caso de falha.
+    """
     data = request.get_json()
     try:
         tokens = services.exchange_code_for_tokens(data.get("code"), data.get("code_verifier"))
@@ -15,6 +21,13 @@ def handle_callback():
 
 @auth_bp.route("/login", methods=['POST'])
 def handle_local_login():
+    """
+    Realiza login local de um usuário.
+    Espera credenciais (username e password) via POST e, se válidas, retorna um token de acesso JWT e dados do usuário.
+    Retorna:
+        JSON com `access_token` e dados do usuário em caso de sucesso, 
+        ou mensagem de erro 401 se as credenciais forem inválidas.
+    """
     data = request.get_json()
     username = data.get("username")
     password = data.get("password")

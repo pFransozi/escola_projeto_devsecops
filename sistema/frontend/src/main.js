@@ -1,3 +1,8 @@
+/**
+ * Ponto de entrada da aplicação Vue.
+ * Configura o axios, Vuetify e inicializa o app com router.
+ */
+
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index'
@@ -9,8 +14,18 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
 
+/**
+ * Define a URL base para todas as requisições axios.
+ * A variável VITE_API_URL deve estar definida em .env.
+ */
 axios.defaults.baseURL = import.meta.env.VITE_API_URL
 
+/**
+ * Interceptor de requisições axios:
+ * adiciona header Authorization com o token armazenado.
+ * @param {import('axios').AxiosRequestConfig} config 
+ * @returns {import('axios').AxiosRequestConfig}
+ */
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -18,11 +33,6 @@ axios.interceptors.request.use(config => {
   }
   return config
 })
-
-const token = localStorage.getItem('token')
-if (token) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-}
 
 const vuetify = createVuetify({
   components,

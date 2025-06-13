@@ -3,6 +3,9 @@ from app.infra.extensions import db
 from app.utils.encrypt_db import EncryptedField
 
 class Noticia(db.Model):
+
+    """Modelo que representa uma Notícia publicada para o sistema escolar."""
+
     __tablename__ = "noticia"
 
     id = db.Column(db.Integer, primary_key=True)
