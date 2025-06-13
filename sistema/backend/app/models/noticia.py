@@ -1,12 +1,13 @@
 from datetime import datetime, timezone
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
 
 class Noticia(db.Model):
     __tablename__ = "noticia"
 
     id = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(255), nullable=False)  # título ou chamada da notícia
-    conteudo = db.Column(db.Text, nullable=False)          # texto completo da notícia
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=False)  # título ou chamada da notícia
+    conteudo = db.Column(EncryptedField(db.Text), nullable=False)          # texto completo da notícia
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(

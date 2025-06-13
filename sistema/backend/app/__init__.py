@@ -10,8 +10,6 @@ def create_app(config_name='development'):
     app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://myuser:mypassword@mysql_db/myappdb"
-    # debug local
-    # app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://myuser:mypassword@127.0.0.1:3306/myappdb"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ECHO"] = False
 

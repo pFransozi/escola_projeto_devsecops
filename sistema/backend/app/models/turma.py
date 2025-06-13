@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
+
 
 class Turma(db.Model):
     __tablename__ = "turma"
 
     id = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(255), nullable=False)  # nome/código da turma
-    sala = db.Column(db.String(50), nullable=False)        # identificador da sala
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=False)  # nome/código da turma
+    sala = db.Column(EncryptedField(db.String(50)), nullable=False)        # identificador da sala
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(

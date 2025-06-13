@@ -1,11 +1,12 @@
 from datetime import datetime, timezone, date
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
 
 class Atividade(db.Model):
     __tablename__ = "atividade"
 
     id = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=False)
     custo = db.Column(db.Float, nullable=False)
     data = db.Column(db.Date, nullable=False)
 

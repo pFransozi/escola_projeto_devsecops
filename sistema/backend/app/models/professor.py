@@ -1,4 +1,5 @@
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
 from app.models.usuario import Usuario
 from datetime import datetime, timezone
 
@@ -9,8 +10,8 @@ class Professor(db.Model):
 
     id = db.Column(db.Integer, db.ForeignKey("usuario.id"), primary_key=True)
     salario = db.Column(db.Float, nullable=False)
-    graduacao = db.Column(db.String(255), nullable=True)
-    descricao = db.Column(db.String(255), nullable=True)
+    graduacao = db.Column(EncryptedField(db.String(255)), nullable=True)
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=True)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(

@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
+
 
 class Disciplina(db.Model):
     __tablename__ = "disciplina"
 
     id = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(255), nullable=False)      # nome ou título da disciplina
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=False)      # nome ou título da disciplina
     ementa = db.Column(db.Text, nullable=False)                # descrição longa da ementa
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))

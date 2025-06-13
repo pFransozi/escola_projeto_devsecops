@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
 from app.models.professor import Professor
 from app.models.turma import Turma
 
@@ -7,7 +8,7 @@ class Aula(db.Model):
     __tablename__ = "aula"
 
     id = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(EncryptedField(db.String(255)), nullable=False)
     professor_id = db.Column(db.Integer, db.ForeignKey("professor.id"), nullable=False)
     turma_id = db.Column(db.Integer, db.ForeignKey("turma.id"), nullable=False)
 

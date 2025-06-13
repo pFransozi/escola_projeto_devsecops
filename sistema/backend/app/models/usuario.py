@@ -1,5 +1,6 @@
 from datetime import datetime, timezone, date
 from app.infra.extensions import db
+from app.utils.encrypt_db import EncryptedField
 from werkzeug.security import check_password_hash
 from enum import Enum
 from sqlalchemy import Enum as SAEnum
@@ -16,15 +17,15 @@ class Usuario(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    nome = db.Column(db.String(50), nullable=False)
-    ultimo_nome = db.Column(db.String(50), nullable=False)
+    nome = db.Column(EncryptedField(db.String(50)), nullable=False)
+    ultimo_nome = db.Column(EncryptedField(db.String(50)), nullable=False)
     usuario = db.Column(db.String(255), nullable=False, unique=True)
     senha = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(60), nullable=False)
+    email = db.Column(EncryptedField(db.String(60)), nullable=False)
     data_nascimento = db.Column(db.Date, nullable=False)
     sexo = db.Column(db.String(1), nullable=False)
-    cpf = db.Column(db.String(11), nullable=False, unique=True)
-    endereco = db.Column(db.String(255), nullable=False)
+    cpf = db.Column(EncryptedField(db.String(11)), nullable=False) #unique=True
+    endereco = db.Column(EncryptedField(db.String(255)), nullable=False)
 
     # 0 - admin, 1-secretario, 2-professor
     tipo = db.Column(

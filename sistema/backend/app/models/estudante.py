@@ -1,17 +1,19 @@
 from app.infra.extensions import db
 from app.models.usuario import Usuario
 from datetime import datetime, timezone
+from app.utils.encrypt_db import EncryptedField
+
 
 class Estudante(db.Model):
     
     __tablename__ = "estudante"
 
     id = db.Column(db.Integer, db.ForeignKey("usuario.id"), primary_key=True)
-    responsavel_1 = db.Column(db.String(50), nullable=False)
-    fone_resp_1 = db.Column(db.String(18), nullable=False)
-    responsavel_2 = db.Column(db.String(50), nullable=False)
-    fone_resp_2 = db.Column(db.String(18), nullable=False)
-    comentarios = db.Column(db.String(255), nullable=False)
+    responsavel_1 = db.Column(EncryptedField(db.String(50)), nullable=True)
+    fone_resp_1 = db.Column(EncryptedField(db.String(18)), nullable=True)
+    responsavel_2 = db.Column(EncryptedField(db.String(50)), nullable=True)
+    fone_resp_2 = db.Column(EncryptedField(db.String(18)), nullable=True)
+    comentarios = db.Column(EncryptedField(db.String(255)), nullable=True)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
