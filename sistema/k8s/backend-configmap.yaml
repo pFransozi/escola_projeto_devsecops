@@ -1,0 +1,15 @@
+# k8s/backend-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  # Configs do JWT
+  JWT_ACCESS_TOKEN_EXPIRES: "3600"
+  JWT_REFRESH_TOKEN_EXPIRES: "604800"
+  # Configs do Cognito
+  AWS_COGNITO_REGION: "us-east-2"
+  AWS_COGNITO_DOMAIN: "us-east-26zcseaq7t"
+  AWS_COGNITO_USER_POOL_ID: "us-east-2_6ZcseaQ7T"
+  AWS_COGNITO_CLIENT_ID: "3j0iqdk57obsq5e167bvsfef5f"
+  AWS_COGNITO_REDIRECT_URI: "https://localhost:3443/callback"

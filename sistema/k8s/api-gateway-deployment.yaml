@@ -1,0 +1,36 @@
+# api-gateway-deployment.yaml (MODO DE DEBUG)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      volumes:
+      - name: tls-certs-volume
+        secret:
+          secretName: frontend-tls
+      containers:
+      - name: api-gateway
+        image: api-gateway-app:v1
+        imagePullPolicy: Never
+        # COMANDO TEMPORÁRIO PARA MANTER O POD RODANDO PARA DEBUG
+        command: ["sleep", "3600"]
+        ports:
+        - containerPort: 5002
+        envFrom:
+        - secretRef:
+            name: backend-secrets
+        - configMapRef:
+            name: backend-config
+        volumeMounts:
+        - name: tls-certs-volume
+          mountPath: "/app"
+          readOnly: true

@@ -1,8 +1,13 @@
 # k8s/web-service.yaml
 apiVersion: v1
 kind: Service
-metadata: { name: "web-service" }
+metadata:
+  name: web-service
 spec:
-  selector: { app: "web" }
-  ports: [ { protocol: "TCP", port: 8000, targetPort: 8000 } ]
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 5000       
+    targetPort: 5000 
   type: NodePort

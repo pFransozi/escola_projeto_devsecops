@@ -1,0 +1,30 @@
+# frontend-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend-nginx
+        image: frontend-app:v1
+        imagePullPolicy: Never # Usa a imagem local que construímos
+        ports:
+        - containerPort: 80  # Porta HTTP
+        - containerPort: 443 # Porta HTTPS
+        volumeMounts:
+        - name: tls-certs-volume
+          mountPath: /etc/nginx/certs # Monta os certificados onde o Nginx espera
+          readOnly: true
+      volumes:
+      - name: tls-certs-volume
+        secret:
+          secretName: frontend-tls # Usa o Secret que criamos

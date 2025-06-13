@@ -1,0 +1,14 @@
+# api-gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  # NOME CRÍTICO: Este nome deve ser 'gateway' para que o Nginx do frontend o encontre.
+  name: gateway
+spec:
+  selector:
+    app: gateway # Seleciona o pod do api-gateway
+  ports:
+  - protocol: TCP
+    port: 5002
+    targetPort: 5002
+  type: ClusterIP # Este serviço só precisa ser acessível de dentro do cluster
