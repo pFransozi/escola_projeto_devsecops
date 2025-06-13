@@ -21,7 +21,7 @@ def create_app(config_name='development'):
     )
 
     app.config["SESSION_COOKIE_HTTPONLY"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"   # Lax ainda envia pra top-level navigations
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  
     app.config["SESSION_COOKIE_SECURE"]   = False  # sem HTTPS local
 
     db.init_app(app)
