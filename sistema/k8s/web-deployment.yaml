@@ -1,0 +1,18 @@
+# k8s/web-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: "web-deployment" }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: "web" } }
+  template:
+    metadata: { labels: { app: "web" } }
+    spec:
+      containers:
+      - name: django-app
+        image: pfransozi/escola-devsecops:v1 # Usaremos essa imagem inicialmente, o Jenkins irá atualizá-la
+        command: [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+        ports: [ { containerPort: 8000 } ]
+        env:
+        - name: DATABASE_URL
+          value: "psycopg2://user:password@db-service:5432/db"
